@@ -64,6 +64,7 @@ export const APPS = [
     "calendar",
     "com.google.android.calendar/com.android.calendar.AllInOneActivity",
     "com.android.calendar/com.android.calendar.AllInOneActivity",
+    "com.xiaomi.calendar/com.android.calendar.homepage.AllInOneActivity",
     "com.samsung.android.calendar/com.samsung.android.app.calendar.activity.MainActivity",
     "com.android.calendar",
   ),
@@ -380,7 +381,121 @@ export const APPS = [
   ),
   app("vlc", "VLC", "cone", "org.videolan.vlc/org.videolan.vlc.StartActivity", "org.videolan.vlc"),
   app("zoho", "Zoho People", "people", "com.zoho.people/com.zoho.people.MainActivity", "com.zoho.people"),
+
+  // ------------------------------- reported by a global Redmi (Note, MIUI/HyperOS)
+  // Xiaomi system apps
+  app("getapps", "GetApps", "store", "com.xiaomi.mipicks/com.xiaomi.mipicks.AppMallAlias", "com.xiaomi.mipicks"),
+  app("mistore", "Mi Store", "bag", "com.mi.global.shop/com.mi.global.home.ui.LaunchActivity", "com.mi.global.shop"),
+  app("themes", "Themes", "palette", "com.android.thememanager/com.android.thememanager.ThemeResourceTabActivity", "com.android.thememanager"),
+  app("minusscreen", "App vault", "minusscreen", "com.mi.globalminusscreen/com.mi.globalminusscreen.LauncherAlias", "com.mi.globalminusscreen"),
+  app("xiaomihome", "Xiaomi Home", "smarthome", "com.xiaomi.smarthome/com.xiaomi.smarthome.SmartHomeMainActivity", "com.xiaomi.smarthome"),
+  app("mimover", "Mi Mover", "mimover", "com.miui.huanji/com.miui.huanji.MainActivity", "com.miui.huanji"),
+  app("xscanner", "Scanner", "scan", "com.xiaomi.scanner/com.xiaomi.scanner.app.ScanActivity", "com.xiaomi.scanner"),
+  app("micommunity", "Mi Community", "support", "com.mi.global.bbs/com.mi.global.bbslib.headlines.ui.SplashActivity", "com.mi.global.bbs"),
+  app("soundrecorder", "Recorder", "recorder", "com.android.soundrecorder/com.android.soundrecorder.StartActivity", "com.android.soundrecorder"),
+
+  // Google
+  app(
+    "findmydevice",
+    "Find My Device",
+    "devicelocator",
+    "com.google.android.apps.adm/com.google.android.apps.adm.activities.MainActivity",
+    "com.google.android.apps.adm",
+  ),
+  app(
+    "safetyhub",
+    "Safety Hub",
+    "safety",
+    "com.google.android.apps.safetyhub/com.google.android.apps.safetyhub.LauncherActivity",
+    "com.google.android.apps.safetyhub",
+  ),
+
+  // Launchers and tools
+  app("nova", "Nova Launcher", "nova", "com.teslacoilsw.launcher/com.teslacoilsw.launcher.NovaShortcutHandler", "com.teslacoilsw.launcher"),
+  app(
+    "novaprime",
+    "Nova Launcher Prime",
+    "nova",
+    "com.teslacoilsw.launcher.prime/com.teslacoilsw.launcher.prime.NovaLauncherPrimeActivity",
+    "com.teslacoilsw.launcher.prime",
+  ),
+  app("shizuku", "Shizuku", "droplet", "moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity", "moe.shizuku.privileged.api"),
+  app("arcticons", "Arcticons", "arcticons", "com.donnnno.arcticons.you.play/com.donnnno.arcticons.activities.MainActivity", "com.donnnno.arcticons.you.play"),
+  app("vidmate", "Video Downloader", "downloader", "downloader.vitmate.downloaderapp/downloader.vitmate.downloaderapp.activity.MainActivity", "downloader.vitmate.downloaderapp"),
+  app("kwgtpack", "Minimal KWGT", "widget", "com.ao.minimalkwgt/org.kustom.api.dashboard.DashboardActivity", "com.ao.minimalkwgt"),
+  app("hpprint", "HP Print Service", "printer", "com.hp.android.printservice/com.hp.android.printservice.launcher.SplashActivity", "com.hp.android.printservice"),
+  app("v380", "V380 Pro", "camera", "com.macrovideo.v380pro/com.macrovideo.v380pro.activities.LaunchActivityWithAd", "com.macrovideo.v380pro"),
+  app("vpnpro", "VPN Pro", "vpn", "com.appntox.vpnpro/com.appntox.vpnpro.other.SplashActivity", "com.appntox.vpnpro"),
+  app("meulify", "Meuify", "spotify", "top.meulify.app/top.meulify.app.GlossyIconAlias", "top.meulify.app"),
+
+  // Spanish apps
+  app("sabadell", "Banco Sabadell", "bank", "net.inverline.bancosabadell.officelocator.android/net.inverline.bancosabadell.officelocator.android.sab.SplashActivity", "net.inverline.bancosabadell.officelocator.android"),
+  app("cobee", "Cobee", "card", "perkfinance.cobee/perkfinance.cobee.MainActivity", "perkfinance.cobee"),
+  app("axa", "AXA", "umbrella", "com.axa.app.myaxa.es/com.axa.app.MainActivity", "com.axa.app.myaxa.es"),
+  app("pin24h", "PIN 24h", "receipt", "es.aeat.pin24h/es.aeat.pin24h.presentation.activities.splash.SplashActivity", "es.aeat.pin24h"),
+  app("carpeta", "Carpeta Ciudadana", "badge", "es.gob.carpeta/es.gob.carpeta.MainActivity", "es.gob.carpeta"),
+  app("autoservef", "Autoservé", "medical", "es.gva.autoservef/es.gva.autoservef.MainActivity", "es.gva.autoservef"),
+  app("buselche", "Bus Elche", "bus", "org.JavandSoft.BusElche/crc64bddf25fb79e73ff2.SplashActivity", "org.JavandSoft.BusElche"),
+  app("cecotec", "Cecotec", "fan", "es.cecotec.forceclima/com.smart.ThingSplashActivity", "es.cecotec.forceclima"),
+  app("localweather", "Weather Radar", "radar", "com.localweather.radar.climate/com.lcwrd.climate.ui.splash.SplashActivity", "com.localweather.radar.climate"),
+
+  // Everything else
+  app("yoigo", "Yoigo", "carrier", "com.yoigo.miyoigo/com.ragnarok.apps.ui.base.MainActivity", "com.yoigo.miyoigo"),
+  app("tdtchannels", "TDTChannels", "tv", "com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity", "com.tdtchannels.player"),
+  app("auesapay", "Auesa Pay", "coin", "com.auesa.auesapay/com.auesa.auesapay.MainActivity", "com.auesa.auesapay"),
+  app("corecitizen", "Core Citizen", "people", "com.corecitizenmobile.android/com.corecitizenmobile.android.MainActivity", "com.corecitizenmobile.android"),
+  app("neweden", "New Eden", "gemini", "com.studio.neweden/org.bitspark.android.Spark", "com.studio.neweden"),
 ];
+
+// Launcher entry points reported by that phone. Each one belongs to a package
+// already listed above: vendors ship several launcher aliases per app (Nova's
+// settings shortcut, Reddit's "launcher.default", Discord's "MainDefault"…) and
+// a ROM declares whichever it likes, so the curated guesses alone leave those
+// icons unmatched. Dumped from the pack's own Coverage panel, then folded in
+// here so the shipped pack covers them without a local device file.
+const DEVICE_ALIASES = {
+  settings: ["com.android.settings/com.android.settings.MainSettings"],
+  authenticator: ["com.google.android.apps.authenticator2/com.google.android.apps.authenticator2.main.MainActivity"],
+  brave: ["com.brave.browser/com.google.android.apps.chrome.Main"],
+  gamecenter: ["com.xiaomi.glgm/com.mig.play.Icon0"],
+  chollo: ["com.chollometro/com.pepper.apps.android.presentation.MainActivityDarkIcon"],
+  daily: ["dev.daily/dev.daily.LauncherActivity"],
+  downloads: ["com.android.providers.downloads.ui/com.android.providers.downloads.ui.activity.DownloadListEntry"],
+  discord: ["com.discord/com.discord.main.MainDefault"],
+  duckduckgo: ["com.duckduckgo.mobile.android/com.duckduckgo.app.launch.Launcher"],
+  f1: ["com.softpauer.f1timingapp2014.basic/com.formula1.MainActivity"],
+  galaxywear: ["com.samsung.android.app.watchmanager/com.samsung.android.app.watchmanager.setupwizard.SetupWizardWelcomeActivity"],
+  github: ["com.github.android/com.github.android.main.MainActivity"],
+  googletv: ["com.google.android.videos/com.google.android.videos.GoogleTvEntryPoint"],
+  gree: ["com.gree.greeplus/io.gree.activity.loading.LoadingInitActivity"],
+  googlehome: ["com.google.android.apps.chromecast.app/com.google.android.apps.chromecast.app.DiscoveryActivity"],
+  hp: ["com.hp.printercontrol/com.hp.printercontrol.hpx.PrinterControlWrapperActivity"],
+  kwgt: ["org.kustom.widget/org.kustom.widget.picker.WidgetPicker"],
+  life360: ["com.life360.android.safetymapd/com.life360.koko.LauncherNormal"],
+  linkedin: ["com.linkedin.android/com.linkedin.android.authenticator.LaunchActivityDefault"],
+  mivideo: ["com.miui.videoplayer/com.miui.video.global.app.LauncherAlias"],
+  motogp: ["com.dorna.officialmotogp/com.dorna.officialmotogp.SplashActivity"],
+  pluto: ["tv.pluto.android/com.paramount.android.pplus.features.splash.mobile.integration.SplashActivity"],
+  psapp: ["com.scee.psxandroid/com.scee.psxandroid.activity.TopActivity"],
+  psremote: ["com.playstation.remoteplay/com.playstation.remoteplay.RpActivityMain"],
+  reddit: ["com.reddit.frontpage/launcher.default"],
+  splitwise: ["com.Splitwise.SplitwiseMobile/com.Splitwise.SplitwiseMobile.views.SplitwiseSplashScreen"],
+  telegram: ["org.telegram.messenger/org.telegram.messenger.DefaultIcon"],
+  twitch: ["tv.twitch.android.app/tv.twitch.android.app.core.LandingActivity"],
+  ubereats: ["com.ubercab.eats/com.ubercab.eats.core.activity.LauncherActivity"],
+  wallet: ["com.google.android.apps.walletnfcrel/com.google.commerce.tapandpay.android.wallet.WalletActivity"],
+  x: ["com.twitter.android/com.x.android.main.MainActivity"],
+  youtube: ["com.google.android.youtube/com.google.android.youtube.app.honeycomb.Shell$HomeActivity"],
+  zoho: ["com.zoho.people/com.zoho.people.home.HomeActivityForLauncher"],
+};
+
+for (const [id, components] of Object.entries(DEVICE_ALIASES)) {
+  const entry = APPS.find((a) => a.id === id);
+  if (!entry) throw new Error(`DEVICE_ALIASES points at unknown app id: ${id}`);
+  for (const component of components) {
+    if (!entry.pkgs.includes(component)) entry.pkgs.push(component);
+  }
+}
 
 // Components for a package entry, e.g. "com.x/com.x.MainActivity".
 export function componentsFor(pkgs) {

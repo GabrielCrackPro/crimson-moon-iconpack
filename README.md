@@ -5,9 +5,12 @@
 A neon-noir icon pack built from the mood of *“Nezuko bajo la luna carmesí”*: near-black
 plates, a crimson moon bloom, and sakura-crimson monoline glyphs.
 
-116 icons + a `generic` fallback, drawn as vectors and rendered at every launcher density:
+151 icons + a `generic` fallback, drawn as vectors and rendered at every launcher density:
 system essentials, the Google suite, Xiaomi/MIUI system apps, chat and social, browsers,
-media, finance, tools and games.
+media, finance, tools, games and the Spanish apps a real phone turned out to carry.
+
+Well-known apps carry a monoline redraw of their official mark rather than an invented
+symbol — Nova's N, Google's locate rings, Shizuku's droplet, Arcticons' A.
 Everything in this repo is generated from `src/` — the SVGs and PNGs are build output.
 
 Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the full sheet
@@ -115,6 +118,11 @@ activity after an app or ROM update: YouTube, for example, reports
 own package. The screen exports both buckets in the format the sync tool below reads,
 and the build maps any device-reported component to the icon the package already uses.
 Nothing leaves the phone unless you share it.
+
+`src/apps.mjs` keeps a `DEVICE_ALIASES` block for exactly this: the launcher aliases a
+real ROM declares (Nova's settings shortcut, Reddit's `launcher.default`, Discord's
+`MainDefault`, YouTube's `Shell$HomeActivity`) folded into the entries they belong to, so
+the shipped pack matches them without needing a local device file.
 
 The same classification runs offline, on any dump:
 
