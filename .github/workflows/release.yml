@@ -133,6 +133,17 @@ jobs:
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee /tmp/verify.txt
           grep -q "Verified using v2 scheme (APK Signature Scheme v2): true" /tmp/verify.txt
 
+      - name: Verify version metadata
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          AAPT2="${ANDROID_SDK_ROOT:-$ANDROID_HOME}/build-tools/$BUILD_TOOLS/aapt2"
+          "$AAPT2" dump badging "$APK" | head -3 | tee /tmp/badging.txt
+          grep -q "package: name='com.crimsonmoon.iconpack'" /tmp/badging.txt
+          grep -q "versionCode='${{ steps.version.outputs.code }}'" /tmp/badging.txt
+          grep -q "versionName='${{ steps.version.outputs.name }}'" /tmp/badging.txt
+          grep -q "sdkVersion:'23'" /tmp/badging.txt
+
       - name: Prepare release assets
         id: assets
         run: |
