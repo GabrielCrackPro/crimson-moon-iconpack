@@ -156,7 +156,9 @@ jobs:
           "$AAPT2" dump badging "$APK" > /tmp/badging-full.txt
           grep -q "launchable-activity: name='com.crimsonmoon.iconpack.MainActivity'" /tmp/badging-full.txt
           grep -q "uses-permission: name='android.permission.QUERY_ALL_PACKAGES'" /tmp/badging-full.txt
-          unzip -l "$APK" | grep -q "res/xml/appfilter.xml"
+          # Release builds shorten resource paths, so match the resource table.
+          "$AAPT2" dump resources "$APK" | grep -q "xml/appfilter"
+          "$AAPT2" dump resources "$APK" | grep -q "xml/drawable"
 
       - name: Prepare release assets
         id: assets

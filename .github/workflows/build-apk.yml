@@ -71,7 +71,10 @@ jobs:
           "$AAPT2" dump badging "$APK" | tee /tmp/badging.txt | head -2
           grep -q "launchable-activity: name='com.crimsonmoon.iconpack.MainActivity'" /tmp/badging.txt
           grep -q "uses-permission: name='android.permission.QUERY_ALL_PACKAGES'" /tmp/badging.txt
-          unzip -l "$APK" | grep -q "res/xml/appfilter.xml"
+          # Release builds shorten resource paths, so match the resource table
+          # rather than a file path in the zip.
+          "$AAPT2" dump resources "$APK" | grep -q "xml/appfilter"
+          "$AAPT2" dump resources "$APK" | grep -q "xml/drawable"
 
       - name: Rename artifact
         run: cp android/app/build/outputs/apk/debug/app-debug.apk crimson-moon-debug.apk

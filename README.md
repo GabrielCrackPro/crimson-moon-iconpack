@@ -5,8 +5,9 @@
 A neon-noir icon pack built from the mood of *“Nezuko bajo la luna carmesí”*: near-black
 plates, a crimson moon bloom, and sakura-crimson monoline glyphs.
 
-70 apps + a `generic` fallback, drawn as vectors and rendered at every launcher density:
-system essentials, the Google suite, chat and social, browsers, media, finance, tools and games.
+116 icons + a `generic` fallback, drawn as vectors and rendered at every launcher density:
+system essentials, the Google suite, Xiaomi/MIUI system apps, chat and social, browsers,
+media, finance, tools and games.
 Everything in this repo is generated from `src/` — the SVGs and PNGs are build output.
 
 Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the full sheet
@@ -26,7 +27,9 @@ Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the
 | `icons/foreground/` | Adaptive foreground SVGs (108 dp canvas) |
 | `icons/png/<density>/` | 48 / 72 / 96 / 144 / 192 px PNGs |
 | `store/` | 512 and 1024 px pack icon for the Play listing |
-| `android/` | Gradle project, resource-complete, ready for Android Studio |
+| `android/` | Gradle project: generated resources plus the app's own screen |
+| `android/app/src/main/java/.../MainActivity.java` | Apply / browse / missing-icons screen |
+| `android/app/src/main/res/values/ui.xml` | UI colours, strings and styles (survives regeneration) |
 | `preview/index.html` | Home-screen mockup + full sheet |
 
 ## Rebuild the assets
@@ -86,9 +89,27 @@ locally, export `CM_KEYSTORE_PATH`, `CM_KEYSTORE_PASSWORD`, `CM_KEY_ALIAS` and
 `assembleRelease` produces an unsigned APK and the release workflow's signature check
 will reject it.
 
+## The app's own screen
+
+Installing the APK gives you a screen with three things:
+
+1. **Apply** — it finds the launchers you actually have installed. Lawnchair and
+   Niagara accept an apply intent, so those get a one-tap button; the rest open the
+   launcher and print the exact settings path.
+2. **Browse** — every icon in the pack, searchable by label or id.
+3. **Missing icons** — the number of apps on the phone the pack has no mapping for,
+   with **Show**, **Copy** and **Share** for the list.
+
+That third panel is the important one. A launcher matches an icon by exact
+`package/activity` component, so "the icon didn't apply" always means "that component
+is not in `appfilter.xml`". The screen diffs the two on the device and hands you the
+exact missing components in the format the repo already reads — paste them into a file
+and run the sync below. Nothing about that list leaves the phone unless you share it.
+
 ## Apply the pack
 
-After installing the APK, open your launcher's icon-pack picker:
+After installing the APK, open your launcher's icon-pack picker — or just tap **Apply**
+on the pack's own screen:
 
 - **Nova** → Settings → Look & feel → Icon style → *Crimson Moon*
 - **Lawnchair** → Home screen settings → General → Icon pack
@@ -111,11 +132,12 @@ Every icon ships in two layers:
 ## Match your own phone exactly
 
 The curated entries in `src/apps.mjs` guess launch activities, and guesses are what
-usually make one or two icons refuse to apply. If you can reach the phone over adb, pin
-every component to what the device actually reports:
+usually make one or two icons refuse to apply. The pack's own screen already reports the
+exact components it is missing — **Show** to read them, **Copy** or **Share** to get the
+list off the phone — so the adb route below is only needed for a full inventory.
 
 ```bash
-# USB debugging on, phone connected and authorised
+# Or, with USB debugging on, phone connected and authorised
 adb shell cmd package query-activities --brief \
   -a android.intent.action.MAIN -c android.intent.category.LAUNCHER > device-components.txt
 
