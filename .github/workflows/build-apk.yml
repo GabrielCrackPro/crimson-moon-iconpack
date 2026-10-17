@@ -60,6 +60,19 @@ jobs:
           ls -lh "$APK"
           unzip -l "$APK" | grep -E "AndroidManifest|resources.arsc|res/xml/appfilter" | head -20
 
+      - name: Verify the app actually has a UI
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          # Regression guard for the black screen: the platform Activity built
+          # fine and drew nothing, so assert on the compiled artifact instead.
+          unzip -l "$APK" | grep -q "classes.dex" || { echo "::error::no dex — the UI did not compile"; exit 1; }
+          AAPT2="${ANDROID_SDK_ROOT:-$ANDROID_HOME}/build-tools/35.0.0/aapt2"
+          "$AAPT2" dump badging "$APK" | tee /tmp/badging.txt | head -2
+          grep -q "launchable-activity: name='com.crimsonmoon.iconpack.MainActivity'" /tmp/badging.txt
+          grep -q "uses-permission: name='android.permission.QUERY_ALL_PACKAGES'" /tmp/badging.txt
+          unzip -l "$APK" | grep -q "res/xml/appfilter.xml"
+
       - name: Rename artifact
         run: cp android/app/build/outputs/apk/debug/app-debug.apk crimson-moon-debug.apk
 

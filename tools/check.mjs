@@ -187,6 +187,88 @@ for (const f of ["store/icon-512.png", "store/icon-1024.png", "preview/index.htm
 }
 ok("store icons and preview page exist");
 
+// ------------------------------------------------------- in-app UI wiring
+// The screen is plain XML + Java that tools/build.mjs never touches, so these
+// checks are the only thing standing between a typo and a black screen again.
+const appDir = path.join(ROOT, "android/app/src/main");
+const manifest = await readFile(path.join(appDir, "AndroidManifest.xml"), "utf8");
+
+if (!/<activity[^>]*android:name="\.MainActivity"/.test(manifest)) {
+  fail("AndroidManifest must launch .MainActivity, not a platform Activity (black screen)");
+}
+for (const action of [
+  "android.intent.action.MAIN",
+  "org.adw.launcher.THEMES",
+  "com.novalauncher.THEME",
+  "com.anddoes.launcher.THEME",
+  "com.teslacoilsw.launcher.THEME",
+  "app.lawnchair.ICONPACK",
+  "ch.deletescape.lawnchair.ICONPACK",
+]) {
+  if (!manifest.includes(`android:name="${action}"`)) fail(`AndroidManifest lost the ${action} filter`);
+}
+if (!manifest.includes("QUERY_ALL_PACKAGES")) {
+  fail("AndroidManifest needs QUERY_ALL_PACKAGES to list installed apps");
+}
+ok("manifest launches the real activity with every theme filter intact");
+
+// Every @string/@color/@style/@drawable the UI asks for must actually exist.
+const valuesDir = path.join(appDir, "res/values");
+const defined = { string: new Set(), color: new Set(), style: new Set(), dimen: new Set() };
+for (const file of await readdir(valuesDir)) {
+  if (!file.endsWith(".xml")) continue;
+  const xml = await readFile(path.join(valuesDir, file), "utf8");
+  for (const kind of ["string", "color", "style", "dimen"]) {
+    for (const m of xml.matchAll(new RegExp(`<${kind}[^>]*name="([a-zA-Z0-9_]+)"`, "g"))) {
+      defined[kind].add(m[1]);
+    }
+  }
+}
+const uiSources = [
+  ...(await readdir(path.join(appDir, "res/layout"))).map((f) => path.join(appDir, "res/layout", f)),
+  ...(await readdir(path.join(appDir, "res/drawable")))
+    .filter((f) => f.startsWith("ui_"))
+    .map((f) => path.join(appDir, "res/drawable", f)),
+  ...(await readdir(path.join(appDir, "java/com/crimsonmoon/iconpack"))).map((f) =>
+    path.join(appDir, "java/com/crimsonmoon/iconpack", f),
+  ),
+];
+const uiDrawables = new Set(
+  (await readdir(path.join(appDir, "res/drawable"))).map((f) => f.replace(/\.xml$/, "")),
+);
+for (const file of uiSources) {
+  const text = await readFile(file, "utf8");
+  const rel = path.relative(ROOT, file);
+  for (const [, kind, name] of text.matchAll(/@(string|color|style|dimen)\/([a-zA-Z0-9_]+)/g)) {
+    if (!defined[kind].has(name)) fail(`${rel}: @${kind}/${name} is not defined`);
+  }
+  for (const [, name] of text.matchAll(/@drawable\/([a-zA-Z0-9_]+)/g)) {
+    if (!uiDrawables.has(name)) fail(`${rel}: @drawable/${name} does not exist`);
+  }
+  // Skips android.R.* — the platform's own resources are not ours to define.
+  for (const [, kind, name] of text.matchAll(/(?<!android\.)R\.(string|color|drawable)\.([a-zA-Z0-9_]+)/g)) {
+    if (kind === "drawable") continue; // generated icon names resolve at runtime
+    if (!defined[kind].has(name)) fail(`${rel}: R.${kind}.${name} is not defined`);
+  }
+}
+ok("every UI resource reference resolves");
+
+for (const f of [
+  "android/app/src/main/java/com/crimsonmoon/iconpack/MainActivity.java",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/IconAdapter.java",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/PackInfo.java",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/Launchers.java",
+  "android/app/src/main/res/layout/activity_main.xml",
+  "android/app/src/main/res/layout/row_icon.xml",
+]) {
+  try {
+    await stat(path.join(ROOT, f));
+  } catch {
+    fail(`missing UI file: ${f}`);
+  }
+}
+ok("in-app UI sources present");
+
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):`);
   for (const f of failures) console.error(`  ✗ ${f}`);

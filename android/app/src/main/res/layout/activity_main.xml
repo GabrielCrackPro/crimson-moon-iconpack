@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Root is a fixed-height LinearLayout holding a scrolling GridView, so the
+  header and the apply/missing cards stay put while the grid scrolls. No
+  nested-scrolling tricks, no AndroidX dependency.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ink"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/pack_mark"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/ui_kicker" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/UiKicker"
+                android:text="@string/ui_kicker" />
+
+            <TextView
+                android:id="@+id/pack_title"
+                style="@style/UiTitle"
+                android:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/pack_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ui_dimmer"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/UiCard">
+
+        <TextView style="@style/UiSection" android:text="@string/ui_apply_title" />
+
+        <TextView
+            android:id="@+id/apply_body"
+            style="@style/UiBody"
+            android:layout_marginTop="6dp"
+            android:text="@string/ui_apply_body" />
+
+        <LinearLayout
+            android:id="@+id/apply_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/icon_search"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/ui_field"
+        android:hint="@string/ui_search_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:textColor="@color/ui_text"
+        android:textColorHint="@color/ui_dimmer"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/icon_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/ui_dimmer"
+        android:textSize="11sp" />
+
+    <GridView
+        android:id="@+id/icon_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:horizontalSpacing="4dp"
+        android:numColumns="4"
+        android:paddingBottom="12dp"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
+
+    <LinearLayout style="@style/UiCard">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/UiSection"
+                android:layout_weight="1"
+                android:text="@string/ui_missing_title" />
+
+            <TextView
+                android:id="@+id/missing_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/crimson"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/missing_body"
+            style="@style/UiBody"
+            android:layout_marginTop="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/missing_copy"
+                style="@style/UiButtonGhost"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/ui_copy" />
+
+            <Button
+                android:id="@+id/missing_show"
+                style="@style/UiButtonGhost"
+                android:layout_width="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/ui_show" />
+
+            <Button
+                android:id="@+id/missing_share"
+                style="@style/UiButton"
+                android:layout_width="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/ui_share" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/export_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="monospace"
+            android:textColor="@color/ui_dimmer"
+            android:textSize="10.5sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/ui_footer"
+        android:textColor="@color/ui_dimmer"
+        android:textSize="10sp" />
+</LinearLayout>

@@ -147,6 +147,17 @@ jobs:
           grep -q "versionName='${{ steps.version.outputs.name }}'" /tmp/badging.txt
           grep -q "minSdkVersion:'23'" /tmp/badging.txt
 
+      - name: Verify the shipped app has a UI
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          unzip -l "$APK" | grep -q "classes.dex"
+          AAPT2="${ANDROID_SDK_ROOT:-$ANDROID_HOME}/build-tools/$BUILD_TOOLS/aapt2"
+          "$AAPT2" dump badging "$APK" > /tmp/badging-full.txt
+          grep -q "launchable-activity: name='com.crimsonmoon.iconpack.MainActivity'" /tmp/badging-full.txt
+          grep -q "uses-permission: name='android.permission.QUERY_ALL_PACKAGES'" /tmp/badging-full.txt
+          unzip -l "$APK" | grep -q "res/xml/appfilter.xml"
+
       - name: Prepare release assets
         id: assets
         run: |

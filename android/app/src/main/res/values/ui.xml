@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  UI resources live here, not in colors.xml / strings.xml / styles.xml, because
+  tools/build.mjs regenerates those three on every build. Anything the app's own
+  screens need belongs in this file.
+-->
+<resources>
+
+    <color name="ui_plate">#FF0D0409</color>
+    <color name="ui_plate_hi">#FF1A0710</color>
+    <color name="ui_hair">#40FF2F5D</color>
+    <color name="ui_hair_soft">#1FFF2F5D</color>
+    <color name="ui_dim">#99F6E7EC</color>
+    <color name="ui_dimmer">#5CF6E7EC</color>
+    <color name="ui_text">#FFF6E7EC</color>
+
+    <string name="ui_kicker">Icon pack</string>
+    <string name="ui_icons_fmt">%1$d icons</string>
+    <string name="ui_coverage_fmt">%1$d of %2$d apps on this phone covered</string>
+    <string name="ui_apply_title">Apply the pack</string>
+    <string name="ui_apply_body">Crimson Moon is installed. Pick it in your launcher\'s icon-pack settings — the buttons below jump straight there where the launcher accepts it.</string>
+    <string name="ui_apply_now">Apply in %1$s</string>
+    <string name="ui_open_launcher">Open %1$s</string>
+    <string name="ui_apply_manual">%1$s</string>
+    <string name="ui_no_launcher">No supported launcher found on this phone.</string>
+    <string name="ui_search_hint">Search icons</string>
+    <string name="ui_missing_title">Missing icons</string>
+    <string name="ui_missing_none">Every app installed on this phone already has an icon in the pack.</string>
+    <string name="ui_missing_body">%1$d app(s) this build does not cover yet. Export the list — the repo turns it straight into icons.</string>
+    <string name="ui_show">Show list</string>
+    <string name="ui_copy">Copy</string>
+    <string name="ui_share">Share</string>
+    <string name="ui_copied">Component list copied</string>
+    <string name="ui_nothing_missing">Nothing missing — nothing to copy</string>
+    <string name="ui_export_hint">Paste into a file, then run:\nnode tools/sync-components.mjs that-file.txt</string>
+    <string name="ui_footer">Crimson Moon · vectors, five densities · MIT</string>
+    <string name="ui_icon_count_search">%1$d shown</string>
+
+    <style name="UiKicker">
+        <item name="android:textColor">@color/crimson</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.24</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="UiTitle">
+        <item name="android:textColor">@color/ui_text</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="UiBody">
+        <item name="android:textColor">@color/ui_dim</item>
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="UiSection">
+        <item name="android:textColor">@color/sakura</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.18</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="UiButton">
+        <item name="android:background">@drawable/ui_button</item>
+        <item name="android:textColor">@color/ui_text</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="UiButtonGhost" parent="UiButton">
+        <item name="android:background">@drawable/ui_button_ghost</item>
+        <item name="android:textColor">@color/sakura</item>
+    </style>
+
+    <style name="UiCard">
+        <item name="android:background">@drawable/ui_card</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">18dp</item>
+        <item name="android:layout_marginTop">14dp</item>
+    </style>
+
+</resources>
