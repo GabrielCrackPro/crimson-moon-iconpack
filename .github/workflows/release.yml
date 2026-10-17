@@ -33,6 +33,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          # A manual dispatch must build the tag it publishes, not the default branch.
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Resolve version
         id: version
