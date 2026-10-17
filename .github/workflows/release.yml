@@ -1,0 +1,187 @@
+name: Release APK
+
+# Publishes a signed APK when a v* tag is pushed, or on demand.
+# Required repository secrets:
+#   CM_KEYSTORE_BASE64    base64 of the release keystore (.jks)
+#   CM_KEYSTORE_PASSWORD  keystore password
+#   CM_KEY_ALIAS          key alias inside the keystore
+#   CM_KEY_PASSWORD       password for that key
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version to publish, e.g. v1.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BUILD_TOOLS: "35.0.0"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve version
+        id: version
+        run: |
+          set -euo pipefail
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          case "$tag" in
+            v*) ;;
+            *) echo "::error::Tag '$tag' must start with v"; exit 1 ;;
+          esac
+          name="${tag#v}"
+          core="${name%%-*}"
+          IFS=. read -r major minor rest <<< "$core"
+          patch="${rest:-0}"
+          for part in "$major" "$minor" "$patch"; do
+            case "$part" in
+              ''|*[!0-9]*) echo "::error::'$tag' is not vMAJOR.MINOR[.PATCH]"; exit 1 ;;
+            esac
+          done
+          code=$(( 10#$major * 10000 + 10#$minor * 100 + 10#$patch ))
+          if [ "$code" -gt 2100000000 ]; then echo "::error::versionCode $code exceeds the Play limit"; exit 1; fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "Publishing $tag as versionName=$name versionCode=$code"
+
+      - name: Check signing secrets are present
+        env:
+          CM_KEYSTORE_BASE64: ${{ secrets.CM_KEYSTORE_BASE64 }}
+          CM_KEYSTORE_PASSWORD: ${{ secrets.CM_KEYSTORE_PASSWORD }}
+          CM_KEY_ALIAS: ${{ secrets.CM_KEY_ALIAS }}
+          CM_KEY_PASSWORD: ${{ secrets.CM_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          missing=""
+          for name in CM_KEYSTORE_BASE64 CM_KEYSTORE_PASSWORD CM_KEY_ALIAS CM_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing"
+            exit 1
+          fi
+
+      - name: Materialise keystore
+        env:
+          CM_KEYSTORE_BASE64: ${{ secrets.CM_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$CM_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          test -s "$RUNNER_TEMP/release.jks"
+          chmod 600 "$RUNNER_TEMP/release.jks"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate icon resources
+        run: npm run build
+
+      - name: Verify generated resources
+        run: npm run check
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: "platforms;android-35 build-tools;${{ env.BUILD_TOOLS }}"
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 8.11.1
+
+      - name: Assemble signed release APK
+        env:
+          CM_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          CM_KEYSTORE_PASSWORD: ${{ secrets.CM_KEYSTORE_PASSWORD }}
+          CM_KEY_ALIAS: ${{ secrets.CM_KEY_ALIAS }}
+          CM_KEY_PASSWORD: ${{ secrets.CM_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          gradle -p android assembleRelease --no-daemon --stacktrace \
+            -PappVersionName="${{ steps.version.outputs.name }}" \
+            -PappVersionCode="${{ steps.version.outputs.code }}"
+
+      - name: Verify signature
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          test -f "$APK" || { echo "::error::$APK was not produced"; exit 1; }
+          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner"
+          "$APKSIGNER" verify --verbose --print-certs "$APK" | tee /tmp/verify.txt
+          grep -q "Verified using v2 scheme (APK Signature Scheme v2): true" /tmp/verify.txt
+
+      - name: Prepare release assets
+        id: assets
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          out="crimson-moon-${{ steps.version.outputs.name }}.apk"
+          cp "$APK" "$out"
+          ( cd "$(dirname "$out")" && sha256sum "$(basename "$out")" > "$(basename "$out").sha256" )
+          echo "apk=$out" >> "$GITHUB_OUTPUT"
+          ls -lh "$out" "$out.sha256"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-apk
+          path: |
+            crimson-moon-*.apk
+            crimson-moon-*.apk.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          NAME: ${{ steps.version.outputs.name }}
+          APK: ${{ steps.assets.outputs.apk }}
+        run: |
+          set -euo pipefail
+          BODY=$(cat <<EOF
+          Signed Crimson Moon icon pack $NAME.
+
+          - \`versionName\`: $NAME
+          - \`versionCode\`: ${{ steps.version.outputs.code }}
+          - Signed with the repository release key (APK Signature Scheme v2 verified in CI).
+          - SHA-256 of the APK is published alongside it.
+
+          **Install**: \`adb install $APK\`, then pick the pack in your launcher's icon-pack settings.
+          EOF
+          )
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK" "$APK.sha256" --clobber
+            gh release edit "$TAG" --title "Crimson Moon $NAME" --notes "$BODY"
+          else
+            gh release create "$TAG" "$APK" "$APK.sha256" \
+              --title "Crimson Moon $NAME" \
+              --notes "$BODY" \
+              --verify-tag
+          fi
+
+      - name: Clean up keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"
