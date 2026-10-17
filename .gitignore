@@ -4,6 +4,11 @@ src/device-components.json
 src/monograms.json
 src/monogram-overrides.json
 
+# Signing material: never commit the release key.
+keys/
+*.jks
+*.keystore
+
 node_modules/
 android/.gradle/
 android/build/
