@@ -130,14 +130,17 @@ for (const id of allIds) {
   for (const [d, s] of Object.entries(DENSITIES)) {
     expected.set(`drawable-${d}/${id}.png`, Math.round(48 * s));
     expected.set(`drawable-${d}/${id}_fg.png`, Math.round(108 * s));
+    expected.set(`drawable-${d}/${id}_mono.png`, Math.round(108 * s));
   }
   expected.set(`mipmap-anydpi-v26/${id}.xml`, null);
+  expected.set(`mipmap-anydpi-v33/${id}.xml`, null);
 }
 for (const [d, s] of Object.entries(DENSITIES)) {
   expected.set(`mipmap-${d}/ic_launcher.png`, Math.round(48 * s));
   expected.set(`mipmap-${d}/ic_launcher_round.png`, Math.round(48 * s));
   expected.set(`drawable-${d}/pack_icon_fg.png`, Math.round(108 * s));
   expected.set(`drawable-${d}/pack_icon_bg.png`, Math.round(108 * s));
+  expected.set(`drawable-${d}/pack_icon_mono.png`, Math.round(108 * s));
 }
 
 let pngChecked = 0;
@@ -157,6 +160,7 @@ for (const [rel, size] of expected) {
     fail(`${rel}: expected ${size}×${size}, got ${meta.width}×${meta.height}`);
 
   const isForeground = rel.includes("_fg") || rel.includes("pack_icon_fg");
+  const isMonochrome = rel.includes("_mono") || rel.includes("pack_icon_mono");
   // Rounded corners are transparent by design, so sample the centre for opacity.
   const inset = Math.round(size * 0.2);
   const { data, info } = await sharp(abs)
@@ -172,7 +176,38 @@ for (const [rel, size] of expected) {
   r /= px; g /= px; b /= px; a /= px;
   const alphaMean = a;
   const colorMean = (r + g + b) / 3;
-  if (isForeground) {
+  if (isMonochrome) {
+    // The launcher tints this layer by its alpha, so the only things that
+    // matter are a non-empty silhouette and a pure-white mask: a stray tint
+    // here would be composited into whatever accent the wallpaper picks.
+    // Fully transparent pixels are skipped — their stored colour is arbitrary.
+    const { data, info } = await sharp(abs).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let visible = 0;
+    let tinted = 0;
+    // A launcher shows the middle 72 of the 108 dp layer, so anything past 2/3
+    // of the half-width is cropped by a circular mask. The coloured icons hide
+    // that in the plate; a flat themed layer shows it as a sliced glyph.
+    const centre = info.width / 2;
+    let furthest = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] < 250) continue;
+      visible++;
+      if (data[i] < 248 || data[i + 1] < 248 || data[i + 2] < 248) tinted++;
+      const fx = (i / 4) % info.width;
+      const fy = Math.floor(i / 4 / info.width);
+      const dist = Math.hypot(fx + 0.5 - centre, fy + 0.5 - centre) / centre;
+      if (dist > furthest) furthest = dist;
+    }
+    if (furthest > 0.68)
+      fail(`${rel}: themed layer reaches ${furthest.toFixed(2)} of the half-width — a circular mask crops it`);
+    // Sparse glyphs are legitimate — Amazon's smile-and-arrow mark covers under
+    // 2% of the canvas — so the floor only catches a genuinely blank layer
+    // (the empty one measures 0.0%).
+    const coverage = (visible / (info.width * info.height)) * 100;
+    if (coverage < 0.5) fail(`${rel}: themed layer is empty (${coverage.toFixed(2)}% covered)`);
+    if (coverage > 60) fail(`${rel}: themed layer covers ${coverage.toFixed(1)}% — no room to breathe`);
+    if (tinted) fail(`${rel}: ${tinted} opaque pixels are not white`);
+  } else if (isForeground) {
     const all = await sharp(abs).stats();
     if ((all.channels[3]?.mean ?? 255) < 3) fail(`${rel}: foreground layer looks empty`);
     if (colorMean < 12) fail(`${rel}: foreground pixels are too dark to read (${colorMean.toFixed(1)})`);
@@ -185,6 +220,28 @@ for (const [rel, size] of expected) {
 ok(`${pngChecked} PNGs exist at the right size with visible content`);
 
 // ------------------------------------------------------- store + preview files
+// The themed layer is only reachable through the v33 adaptive icon: a v26 file
+// that also declared it would break pre-Android-13 parsers, and a v33 file
+// without it would silently leave themed icons untinted.
+let themedChecked = 0;
+for (const id of [...allIds, "ic_launcher", "ic_launcher_round"]) {
+  for (const v of [26, 33]) {
+    const rel = `mipmap-anydpi-v${v}/${id}.xml`;
+    const src = await readFile(path.join(RES, rel), "utf8").catch(() => null);
+    if (src === null) continue; // absence already reported by the file checks
+    const mono = src.match(/<monochrome\s+android:drawable="@drawable\/([^"]+)"/)?.[1];
+    if (v === 33 && !mono) fail(`${rel}: missing the <monochrome> layer`);
+    if (v === 26 && mono) fail(`${rel}: <monochrome> needs the v33 qualifier`);
+    // A themed layer that points at another app's mask would ship a wrong icon
+    // that no amount of white-on-transparent checking would catch.
+    const want = id.startsWith("ic_launcher") ? "pack_icon_mono" : `${id}_mono`;
+    if (v === 33 && mono && mono !== want)
+      fail(`${rel}: <monochrome> points at ${mono}, expected ${want}`);
+    if (v === 33) themedChecked++;
+  }
+}
+ok(`${themedChecked} adaptive icons carry a themed (monochrome) layer`);
+
 for (const f of ["store/icon-512.png", "store/icon-1024.png", "preview/index.html", "preview/wallpaper.png"]) {
   try {
     await stat(path.join(ROOT, f));

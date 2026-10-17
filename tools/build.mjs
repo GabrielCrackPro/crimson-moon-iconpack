@@ -2,8 +2,8 @@ import sharp from "sharp";
 import { mkdir, writeFile, readFile, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { APPS, componentsFor } from "../src/apps.mjs";
-import { iconSVG, foregroundSVG, backgroundSVG } from "../src/render.mjs";
-import { PACK_ICON_SVG, PACK_BG_SVG, PACK_FG_SVG } from "../src/pack-icon.mjs";
+import { iconSVG, foregroundSVG, backgroundSVG, monochromeSVG } from "../src/render.mjs";
+import { PACK_ICON_SVG, PACK_BG_SVG, PACK_FG_SVG, PACK_MONO_SVG } from "../src/pack-icon.mjs";
 import { PACK_ICON } from "../src/apps.mjs";
 import { initialsGlyph, initialsId } from "../src/letters.mjs";
 import { loadMonogramState } from "./lib/monograms.mjs";
@@ -52,16 +52,42 @@ const png = async (svg, size, out) => {
     .toFile(out);
 };
 
+// The themed layer is one colour plus alpha, so a 16-entry palette is visually
+// indistinguishable from truecolour and about a third of the size — which
+// matters when there are 760 of them.
+const pngMono = async (svg, size, out) => {
+  await mkdir(path.dirname(out), { recursive: true });
+  await sharp(Buffer.from(svg), { density: 384 })
+    .resize(size, size)
+    .png({ compressionLevel: 9, palette: true, colours: 16, dither: 0, effort: 10 })
+    .toFile(out);
+};
+
+// Android 13+ reads the themed layer from an adaptive icon declared with the
+// v33 qualifier; older launchers keep resolving the v26 icon, which has no
+// <monochrome> child to trip over.
+const adaptiveXml = (bg, fg, mono) => `<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/${bg}"/>
+    <foreground android:drawable="@drawable/${fg}"/>${
+      mono ? `
+    <monochrome android:drawable="@drawable/${mono}"/>` : ""
+    }
+</adaptive-icon>
+`;
+
 async function main() {
   // clean generated dirs
-  for (const d of ["icons/svg", "icons/foreground", "icons/png", "store"]) {
+  for (const d of ["icons/svg", "icons/foreground", "icons/monochrome", "icons/png", "store"]) {
     await rm(path.join(ROOT, d), { recursive: true, force: true });
   }
   for (const [d] of DENSITIES) {
     await rm(path.join(RES, `drawable-${d}`), { recursive: true, force: true });
     await rm(path.join(RES, `mipmap-${d}`), { recursive: true, force: true });
   }
-  await rm(path.join(RES, "mipmap-anydpi-v26"), { recursive: true, force: true });
+  for (const v of ["mipmap-anydpi-v26", "mipmap-anydpi-v33"]) {
+    await rm(path.join(RES, v), { recursive: true, force: true });
+  }
 
   const names = [];
   const glyphFor = new Map();
@@ -89,14 +115,18 @@ async function main() {
   for (const name of names) {
     const glyph = glyphFor.get(name);
     const svg = iconSVG(glyph, 512);
+    const foreground = foregroundSVG(glyph, 432);
+    const monochrome = monochromeSVG(glyph, 432);
     await write(path.join(ROOT, `icons/svg/${name}.svg`), svg);
-    await write(path.join(ROOT, `icons/foreground/${name}.svg`), foregroundSVG(glyph, 432));
+    await write(path.join(ROOT, `icons/foreground/${name}.svg`), foreground);
+    await write(path.join(ROOT, `icons/monochrome/${name}.svg`), monochrome);
 
     for (const [d, s] of DENSITIES) {
       const px = Math.round(48 * s);
       await png(svg, px, path.join(RES, `drawable-${d}/${name}.png`));
       await png(svg, px, path.join(ROOT, `icons/png/${d}/${name}.png`));
-      await png(foregroundSVG(glyph, 432), Math.round(108 * s), path.join(RES, `drawable-${d}/${name}_fg.png`));
+      await png(foreground, Math.round(108 * s), path.join(RES, `drawable-${d}/${name}_fg.png`));
+      await pngMono(monochrome, Math.round(108 * s), path.join(RES, `drawable-${d}/${name}_mono.png`));
     }
   }
 
@@ -105,17 +135,12 @@ async function main() {
     await png(backgroundSVG(432), Math.round(108 * s), path.join(RES, `drawable-${d}/pack_bg.png`));
   }
 
-  // Adaptive icon XML for every launcher entry.
+  // Adaptive icon XML for every launcher entry, with the themed layer where the
+  // platform can use it.
   for (const name of names) {
-    await write(
-      path.join(RES, `mipmap-anydpi-v26/${name}.xml`),
-      `<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/pack_bg"/>
-    <foreground android:drawable="@drawable/${name}_fg"/>
-</adaptive-icon>
-`,
-    );
+    const args = ["pack_bg", name + "_fg", name + "_mono"];
+    await write(path.join(RES, `mipmap-anydpi-v26/${name}.xml`), adaptiveXml(...args.slice(0, 2)));
+    await write(path.join(RES, `mipmap-anydpi-v33/${name}.xml`), adaptiveXml(...args));
   }
 
   // Pack app icon (mipmap) + store asset.
@@ -125,17 +150,12 @@ async function main() {
     await png(PACK_ICON_SVG, px, path.join(RES, `mipmap-${d}/ic_launcher_round.png`));
     await png(PACK_FG_SVG, Math.round(108 * s), path.join(RES, `drawable-${d}/pack_icon_fg.png`));
     await png(PACK_BG_SVG, Math.round(108 * s), path.join(RES, `drawable-${d}/pack_icon_bg.png`));
+    await pngMono(PACK_MONO_SVG, Math.round(108 * s), path.join(RES, `drawable-${d}/pack_icon_mono.png`));
   }
   for (const n of ["ic_launcher", "ic_launcher_round"]) {
-    await write(
-      path.join(RES, `mipmap-anydpi-v26/${n}.xml`),
-      `<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/pack_icon_bg"/>
-    <foreground android:drawable="@drawable/pack_icon_fg"/>
-</adaptive-icon>
-`,
-    );
+    const args = ["pack_icon_bg", "pack_icon_fg", "pack_icon_mono"];
+    await write(path.join(RES, `mipmap-anydpi-v26/${n}.xml`), adaptiveXml(...args.slice(0, 2)));
+    await write(path.join(RES, `mipmap-anydpi-v33/${n}.xml`), adaptiveXml(...args));
   }
   await png(PACK_ICON_SVG, 512, path.join(ROOT, "store/icon-512.png"));
   await png(PACK_ICON_SVG, 1024, path.join(ROOT, "store/icon-1024.png"));
@@ -245,6 +265,33 @@ function previewHtml(names, hasLetters) {
     )
     .join("\n");
 
+  // Material You's own palette: a pastel container with the accent's on-colour
+  // glyph, which is what a launcher swaps the plate for.
+  const accent = [
+    ["#f2b8c6", "#3a0a18"],
+    ["#d6b4ff", "#2a1140"],
+    ["#ffd9a0", "#3d2409"],
+    ["#a8e6cf", "#08291f"],
+    ["#bcd4ff", "#0d2142"],
+    ["#ffc2b4", "#3a1109"],
+  ];
+  const themed = ["phone", "messages", "camera", "spotify", "maps", "calendar", "files", "play", "browser"];
+  const themedTiles = [
+    ...themed.map((id) => ({ id, label: byId[id]?.label ?? id })),
+    { id: "pack_icon", label: "Crimson Moon" },
+  ]
+    .map((t, i) => {
+      const [bg, glyph] = accent[i % accent.length];
+      const file = t.id === "pack_icon" ? "pack_icon_mono" : t.id + "_mono";
+      return `<figure>
+        <span class="tint" style="--accent:${bg};--inkGlyph:${glyph}">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/${file}.png)"></i>
+        </span>
+        <figcaption>${t.label}</figcaption>
+      </figure>`;
+    })
+    .join("\n");
+
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -314,6 +361,17 @@ function previewHtml(names, hasLetters) {
   .sizes{display:flex;flex-wrap:wrap;gap:24px 34px;align-items:flex-end;margin:22px 0 6px}
   .sizes div{text-align:center;font-size:10px;color:var(--dim)}
   .sizes img{display:block;margin:0 auto 8px;image-rendering:auto}
+  /* themed icons: the alpha-only layer, painted with a wallpaper accent */
+  .themed{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:20px 10px}
+  .themed figure{margin:0;text-align:center}
+  .themed figcaption{margin-top:6px}
+  /* A launcher scales the 108 dp layer so its central 72 dp fills the icon, so
+     the mask box is 150% of the circle and the circle clips it. Showing the
+     layer at 100% would draw the glyph two-thirds of its real size. */
+  .themed .tint{display:block;position:relative;overflow:hidden;width:56px;height:56px;margin:0 auto;
+    border-radius:50%;background:var(--accent)}
+  .themed .tint i{position:absolute;left:-25%;top:-25%;width:150%;height:150%;background:var(--inkGlyph);
+    -webkit-mask:var(--src) center/100% 100% no-repeat;mask:var(--src) center/100% 100% no-repeat}
   footer{margin-top:40px;color:rgba(246,231,236,.3);font-size:11px;letter-spacing:.02em}
 </style>
 </head>
@@ -362,6 +420,15 @@ ${[..."abcdefghijklmnopqrstuvwxyz", ..."0123456789"]
       </section>`
           : ""
       }
+
+      <section class="panel" style="margin-top:22px">
+        <h2>Themed icons</h2>
+        <p class="sub">On Android 13+ the launcher drops the plate and paints this alpha-only layer with your
+        wallpaper's accent — the same glyph, no bloom. Shown here over six accents.</p>
+        <div class="themed">
+${themedTiles}
+        </div>
+      </section>
 
       <section class="panel" style="margin-top:22px">
         <h2>Scale check</h2>

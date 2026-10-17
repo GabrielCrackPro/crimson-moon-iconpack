@@ -69,6 +69,25 @@ ${DEFS}
 <g transform="translate(256 262) scale(0.72) translate(-256 -256)">${ART}</g>
 </svg>`;
 
+// Android 13+ themed-icon layer: the gate and its moon as one white mask, with
+// the petals dropped — at 64 dp they would read as noise, not detail.
+//
+// Unlike the coloured foreground, this mark is fitted to the 66 dp safe circle
+// (r 33 of the 108 dp layer, r 156 of this 512 canvas, less a 6-unit margin).
+// The coloured gate is near-black on a near-black plate, so a launcher crop
+// along its feet is invisible there; painted flat in the accent it is not, and
+// an uncropped gate would also read much larger than every other themed glyph.
+export const PACK_MONO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<g transform="translate(256 256) scale(0.5423) translate(-256 -286)" fill="#ffffff">
+  <circle cx="258" cy="150" r="72"/>
+  <path d="M74 288h364c9 0 11 7 5 12l-16 13c-3 2-7 3-11 3H101c-4 0-8-1-11-3l-16-13c-6-5-4-12 5-12Z"/>
+  <rect x="138" y="340" width="236" height="16" rx="4"/>
+  <rect x="239" y="306" width="34" height="34" rx="2"/>
+  <path d="M166 316h26l16 164c1 9-4 14-11 14h-22c-7 0-13-5-12-14z"/>
+  <path d="M320 316h26l14 164c1 9-5 14-12 14h-22c-7 0-12-5-11-14z"/>
+</g>
+</svg>`;
+
 export const PACK_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
 ${DEFS}
 <defs>

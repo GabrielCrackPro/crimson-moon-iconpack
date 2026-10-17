@@ -67,6 +67,17 @@
   .sizes{display:flex;flex-wrap:wrap;gap:24px 34px;align-items:flex-end;margin:22px 0 6px}
   .sizes div{text-align:center;font-size:10px;color:var(--dim)}
   .sizes img{display:block;margin:0 auto 8px;image-rendering:auto}
+  /* themed icons: the alpha-only layer, painted with a wallpaper accent */
+  .themed{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:20px 10px}
+  .themed figure{margin:0;text-align:center}
+  .themed figcaption{margin-top:6px}
+  /* A launcher scales the 108 dp layer so its central 72 dp fills the icon, so
+     the mask box is 150% of the circle and the circle clips it. Showing the
+     layer at 100% would draw the glyph two-thirds of its real size. */
+  .themed .tint{display:block;position:relative;overflow:hidden;width:56px;height:56px;margin:0 auto;
+    border-radius:50%;background:var(--accent)}
+  .themed .tint i{position:absolute;left:-25%;top:-25%;width:150%;height:150%;background:var(--inkGlyph);
+    -webkit-mask:var(--src) center/100% 100% no-repeat;mask:var(--src) center/100% 100% no-repeat}
   footer{margin-top:40px;color:rgba(246,231,236,.3);font-size:11px;letter-spacing:.02em}
 </style>
 </head>
@@ -760,6 +771,74 @@
           <img src="../letters/png/xxxhdpi/7.png" alt="monogram 7">
           <img src="../letters/png/xxxhdpi/8.png" alt="monogram 8">
           <img src="../letters/png/xxxhdpi/9.png" alt="monogram 9">
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:22px">
+        <h2>Themed icons</h2>
+        <p class="sub">On Android 13+ the launcher drops the plate and paints this alpha-only layer with your
+        wallpaper's accent — the same glyph, no bloom. Shown here over six accents.</p>
+        <div class="themed">
+<figure>
+        <span class="tint" style="--accent:#f2b8c6;--inkGlyph:#3a0a18">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/phone_mono.png)"></i>
+        </span>
+        <figcaption>Phone</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#d6b4ff;--inkGlyph:#2a1140">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/messages_mono.png)"></i>
+        </span>
+        <figcaption>Messages</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#ffd9a0;--inkGlyph:#3d2409">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/camera_mono.png)"></i>
+        </span>
+        <figcaption>Camera</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#a8e6cf;--inkGlyph:#08291f">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/spotify_mono.png)"></i>
+        </span>
+        <figcaption>Spotify</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#bcd4ff;--inkGlyph:#0d2142">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/maps_mono.png)"></i>
+        </span>
+        <figcaption>Maps</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#ffc2b4;--inkGlyph:#3a1109">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/calendar_mono.png)"></i>
+        </span>
+        <figcaption>Calendar</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#f2b8c6;--inkGlyph:#3a0a18">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/files_mono.png)"></i>
+        </span>
+        <figcaption>Files</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#d6b4ff;--inkGlyph:#2a1140">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/play_mono.png)"></i>
+        </span>
+        <figcaption>Play Store</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#ffd9a0;--inkGlyph:#3d2409">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/browser_mono.png)"></i>
+        </span>
+        <figcaption>Chrome</figcaption>
+      </figure>
+<figure>
+        <span class="tint" style="--accent:#a8e6cf;--inkGlyph:#08291f">
+          <i style="--src:url(../android/app/src/main/res/drawable-xxxhdpi/pack_icon_mono.png)"></i>
+        </span>
+        <figcaption>Crimson Moon</figcaption>
+      </figure>
         </div>
       </section>
 

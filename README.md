@@ -32,6 +32,7 @@ Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the
 | `tools/review-sheet.mjs` | Review page: official icon vs the current drawing |
 | `icons/svg/` | 512 px SVG source of every icon |
 | `icons/foreground/` | Adaptive foreground SVGs (108 dp canvas) |
+| `icons/monochrome/` | Themed-icon mask SVGs (white on transparent) |
 | `icons/png/<density>/` | 48 / 72 / 96 / 144 / 192 px PNGs |
 | `store/` | 512 and 1024 px pack icon for the Play listing |
 | `android/` | Gradle project: generated resources plus the app's own screen |
@@ -151,13 +152,50 @@ On a stock Pixel/Samsung launcher (no icon-pack support) use the PNGs in
 
 ## Adaptive icons
 
-Every icon ships in two layers:
+Every icon ships in three layers:
 
 - foreground — the glyph, inside the 66 dp safe zone of a 108 dp canvas
 - background — the plate and bloom, full bleed
+- monochrome — the glyph alone, white on transparent, for themed icons
 
-`res/mipmap-anydpi-v26/<icon>.xml` binds them, so launchers with any mask shape
+`res/mipmap-anydpi-v26/<icon>.xml` binds the first two, so launchers with any mask shape
 (circle, squircle, teardrop) crop the same art correctly. Legacy PNGs remain for API < 26.
+
+### Themed icons (Android 13+)
+
+`res/mipmap-anydpi-v33/<icon>.xml` adds `<monochrome>`, so on Android 13 and up a launcher
+that supports themed icons drops the plate and paints the glyph with the wallpaper's
+deepest accent instead — which is also the only way the pack can follow a light theme.
+
+```bash
+npm run build && npm run check   # 153 adaptive icons, each with a themed layer
+```
+
+Four properties are load-bearing, and `npm run check` fails without any of them:
+
+- the layer is a pure-white mask — the launcher keeps its alpha and discards its colour,
+  so any tint baked in here would be composited into the accent
+- the artwork stays inside two-thirds of the half-width. A launcher shows the middle 72
+  of the 108 dp layer, and the coloured icons hide a crop in the plate; a flat mask shows
+  it as a glyph sliced off along the circle.
+- the layer it points at is that icon's own mask, not a neighbour's
+- `<monochrome>` lives in the `v33` file only: pre-Android-13 parsers skip the tag today,
+  but there is no reason to hand them something to trip over, and `check` fails if a `v26`
+  icon grows one
+
+The themed layer is quantised to a 16-entry palette (0.7 MB across all densities instead of
+4 MB) because it has one colour; the glyph is drawn a hair heavier there (stroke 2.35, not
+2.15) since the glow that widens the coloured icons is gone.
+
+The pack's own app icon carries a themed layer too — the gate and its moon, without the
+petals, which read as noise at 64 dp. It is the one mark drawn at its own scale: the
+coloured gate is near-black on a near-black plate, so its feet can run to the mask edge
+unnoticed, while the same silhouette painted in the accent would show the crop. The mask
+is therefore fitted inside the safe circle, at roughly the size of the app glyphs.
+
+See the layer tinted over six wallpaper accents in the preview's **Themed icons** panel;
+it is drawn at the launcher's own zoom (the 108 dp layer scaled so its central 72 fills
+the circle), so the glyph sizes there match what a phone shows.
 
 ## Match your own phone exactly
 

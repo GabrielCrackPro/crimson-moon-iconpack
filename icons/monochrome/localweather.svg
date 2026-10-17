@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 108 108">
+<!-- alpha-only mask: everything visible is #ffffff, the rest transparent -->
+<g transform="translate(29.4 29.4) scale(2.05)">
+  <g fill="none" stroke="#ffffff" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.2" class="solid"/><path d="M12 5.4a6.6 6.6 0 0 1 6.6 6.6"/><path d="M12 2.4a9.6 9.6 0 0 1 9.6 9.6"/><path d="M12 12L18.4 5.6"/></g>
+  <g fill="#ffffff"></g>
+</g>
+</svg>

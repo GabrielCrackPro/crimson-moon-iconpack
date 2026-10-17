@@ -121,6 +121,23 @@ ${DEFS(false)}<circle cx="54" cy="54" r="34" fill="url(#bloom)" opacity="0.8"/>
 </svg>`;
 }
 
+/**
+ * Android 13+ themed-icon layer: the glyph alone, drawn white on transparent.
+ * The launcher keeps the alpha channel and paints it with the system accent, so
+ * the bloom, plate and gradient are deliberately absent. The stroke is a hair
+ * heavier than the coloured icons because the glow no longer widens it.
+ */
+export function monochromeSVG(name, size = 432) {
+  const { solid, stroked } = glyphBody(name);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 108 108">
+<!-- alpha-only mask: everything visible is #ffffff, the rest transparent -->
+<g transform="translate(29.4 29.4) scale(2.05)">
+  <g fill="none" stroke="#ffffff" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round">${stroked}</g>
+  <g fill="#ffffff">${solid}</g>
+</g>
+</svg>`;
+}
+
 /** Adaptive icon background layer: plate + moon, no corners (launcher masks it). */
 export function backgroundSVG(size = 432) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 108 108">
