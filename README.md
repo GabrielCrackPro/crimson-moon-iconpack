@@ -41,13 +41,50 @@ npm run check     # validates XML and cross-checks every resource reference
 
 ## Build the APK
 
-No Android SDK is installed here, so the APK has not been built in this workspace.
-Open the `android/` folder in Android Studio (or run `gradle assembleRelease` with a
-local SDK), then install `app/build/outputs/apk/release/app-release.apk`.
-
 The module is resource-only: the manifest points at `android.app.Activity`, so no
 Java/Kotlin is required. Replace it with your own apply-screen activity when you want
 a real UI.
+
+### From CI
+
+| Workflow | Trigger | Output |
+| --- | --- | --- |
+| [`build-apk.yml`](.github/workflows/build-apk.yml) | every push to `main`, PRs | unsigned debug APK as the `crimson-moon-apk` artifact |
+| [`release.yml`](.github/workflows/release.yml) | `v*` tag, or manual dispatch | signed APK + SHA-256 attached to a GitHub Release |
+
+Both regenerate `res/`, run `npm run check`, then assemble with JDK 17 and Gradle 8.11.1.
+
+### Cut a release
+
+```bash
+git tag -a v1.1.0 -m "Crimson Moon 1.1.0"
+git push origin v1.1.0
+```
+
+The tag becomes the version: `v1.1.0` → `versionName 1.1.0`, `versionCode 10100`
+(`major×10000 + minor×100 + patch`). The workflow fails if the tag is not
+`vMAJOR.MINOR[.PATCH]`, if the versionCode exceeds the Play limit of 2100000000, or if
+the packaged metadata disagrees with the tag. Before publishing it verifies the APK is
+signed and that APK Signature Scheme v2 is intact, then uploads the APK plus its
+SHA-256. Re-running against an existing tag replaces the assets.
+
+### Signing
+
+Release signing reads four repository secrets:
+
+| Secret | Contents |
+| --- | --- |
+| `CM_KEYSTORE_BASE64` | `base64 -w0 keys/release.jks` |
+| `CM_KEYSTORE_PASSWORD` | keystore password |
+| `CM_KEY_ALIAS` | `crimsonmoon` |
+| `CM_KEY_PASSWORD` | key password |
+
+`keys/` is gitignored and holds the only other copy of the keystore. **Back it up** —
+without it you cannot sign an update for an installed copy. To build a signed APK
+locally, export `CM_KEYSTORE_PATH`, `CM_KEYSTORE_PASSWORD`, `CM_KEY_ALIAS` and
+`CM_KEY_PASSWORD`, then run `gradle -p android assembleRelease`. Without them,
+`assembleRelease` produces an unsigned APK and the release workflow's signature check
+will reject it.
 
 ## Apply the pack
 
