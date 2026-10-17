@@ -304,11 +304,11 @@ export const APPS = [
   ),
 
   // ------------------------------------------------------- services & media
-  app("f1", "F1", "flag", "com.softpauer.f1timingapp2014.basic"),
+  app("f1", "F1", "f1", "com.softpauer.f1timingapp2014.basic"),
   app(
     "motogp",
     "MotoGP",
-    "helmet",
+    "motogp",
     "com.dorna.officialmotogp/com.worldline.motogp.view.activity.SplashActivity",
     "com.dorna.officialmotogp",
   ),

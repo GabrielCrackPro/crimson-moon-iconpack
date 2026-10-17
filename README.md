@@ -10,7 +10,9 @@ system essentials, the Google suite, Xiaomi/MIUI system apps, chat and social, b
 media, finance, tools, games and the Spanish apps a real phone turned out to carry.
 
 Well-known apps carry a monoline redraw of their official mark rather than an invented
-symbol — Nova's N, Google's locate rings, Shizuku's droplet, Arcticons' A.
+symbol — Nova's N, Google's locate rings, Shizuku's droplet, Arcticons' A, the 2017 F1
+mark and the rider M of MotoGP's 2024 monogram. Where a wordmark is too wide or too fine
+to survive a launcher icon at this stroke weight, the mark is carried by its letterform.
 Everything in this repo is generated from `src/` — the SVGs and PNGs are build output.
 
 Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the full sheet

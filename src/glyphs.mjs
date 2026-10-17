@@ -596,18 +596,22 @@ export const GLYPHS = {
     L(4.2, 20.4, 19.8, 20.4),
     L(8.9, 11.4, 15.1, 11.4),
   ],
-  helmet: [
-    C(12, 12, 8.6),
-    P("M5.5 11.2c4.1-3.6 9.9-4 13.3.7"),
-    P("M7.6 18.2c2.9 1.9 6.4 1.9 9.3.2"),
-    DOt(15.2, 6.9, 0.9),
+  // MotoGP, the "rider" M of the 2024 MGP monogram (also the app icon): a
+  // forward-leaning arm, a narrow crest, a deep rounded valley on the baseline,
+  // a second crest and a vertical stem. The monogram's GP half needs ~9 units of
+  // height to keep its counters open at this stroke weight, so the mark is
+  // carried by its M — the pack's lettermark convention (Nova's N, Arcticons' A).
+  motogp: [
+    P("M3.2 16.3 9.4 7.8 10.7 13.9Q11.6 16.4 13.1 15L20.7 7.8V16.3"),
   ],
-  flag: [
-    L(5.4, 3.6, 5.4, 20.6),
-    R(5.4, 4.6, 13.8, 7, 1),
-    DOt(8.9, 6.6, 0.95),
-    DOt(12.3, 9.6, 0.95),
-    DOt(15.7, 9.6, 0.95),
+  // Formula 1, the 2017 mark: two nested hooks (swept arm + bar) and the
+  // leaning 1. The official mark is 120x30 with 1.8-unit white gaps, which
+  // collapse at this stroke weight, so the gaps are opened up to 1.6 and the
+  // whole mark is brought to a 2:1 ratio to stay legible at launcher size.
+  f1: [
+    P("M3.2 17.2 9.2 8.1h8.5"),
+    P("M4.8 17.2 9.9 12.1h5.4"),
+    P("M15.6 17.2 20.7 6.6"),
   ],
   watch: [
     R(7, 6.4, 10, 11.2, 2.6),
