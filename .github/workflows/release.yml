@@ -142,7 +142,7 @@ jobs:
           grep -q "package: name='com.crimsonmoon.iconpack'" /tmp/badging.txt
           grep -q "versionCode='${{ steps.version.outputs.code }}'" /tmp/badging.txt
           grep -q "versionName='${{ steps.version.outputs.name }}'" /tmp/badging.txt
-          grep -q "sdkVersion:'23'" /tmp/badging.txt
+          grep -q "minSdkVersion:'23'" /tmp/badging.txt
 
       - name: Prepare release assets
         id: assets
