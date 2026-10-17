@@ -90,7 +90,14 @@ try {
       continue;
     }
     for (const act of acts) {
-      if (!act.startsWith(`${pkg}.`)) fail(`device activity outside its own package: ${pkg}/${act}`);
+      // Deliberately not "must start with the package name": plenty of real
+      // apps launch a class from another namespace (YouTube reports
+      // com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity from
+      // package com.google.android.youtube). Cross-wiring is already impossible
+      // because of the unclaimed-package check above.
+      if (!/^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)+$/.test(act)) {
+        fail(`device activity is not a fully-qualified class: ${pkg}/${act}`);
+      }
     }
   }
   ok(`device override: ${Object.keys(dev).length} packages pinned to real activities`);

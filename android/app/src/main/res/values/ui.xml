@@ -16,7 +16,7 @@
 
     <string name="ui_kicker">Icon pack</string>
     <string name="ui_icons_fmt">%1$d icons</string>
-    <string name="ui_coverage_fmt">%1$d of %2$d apps on this phone covered</string>
+    <string name="ui_coverage_fmt">%1$d of %2$d apps matched</string>
     <string name="ui_apply_title">Apply the pack</string>
     <string name="ui_apply_body">Crimson Moon is installed. Pick it in your launcher\'s icon-pack settings — the buttons below jump straight there where the launcher accepts it.</string>
     <string name="ui_apply_now">Apply in %1$s</string>
@@ -24,17 +24,22 @@
     <string name="ui_apply_manual">%1$s</string>
     <string name="ui_no_launcher">No supported launcher found on this phone.</string>
     <string name="ui_search_hint">Search icons</string>
-    <string name="ui_missing_title">Missing icons</string>
-    <string name="ui_missing_none">Every app installed on this phone already has an icon in the pack.</string>
-    <string name="ui_missing_body">%1$d app(s) this build does not cover yet. Export the list — the repo turns it straight into icons.</string>
-    <string name="ui_show">Show list</string>
+    <string name="ui_icon_count_search">%1$d shown</string>
+
+    <string name="ui_coverage_title">Coverage on this phone</string>
+    <string name="ui_mismatch_title">mismatched</string>
+    <string name="ui_missing_title">missing</string>
+    <string name="ui_coverage_none">Every app installed here matches the pack exactly.</string>
+    <string name="ui_coverage_body">%1$d app(s) have an icon in the pack, but your phone reports a different launcher component — the launcher can\'t match them. %2$d have no icon yet.</string>
+    <string name="ui_mismatch_help">The pack themes these apps; only the component differs, so the fix is one line each.</string>
+    <string name="ui_missing_help">The pack has no icon for these apps yet.</string>
+    <string name="ui_show">Show</string>
     <string name="ui_copy">Copy</string>
     <string name="ui_share">Share</string>
     <string name="ui_copied">Component list copied</string>
-    <string name="ui_nothing_missing">Nothing missing — nothing to copy</string>
+    <string name="ui_nothing_missing">Nothing to export — everything matches</string>
     <string name="ui_export_hint">Paste into a file, then run:\nnode tools/sync-components.mjs that-file.txt</string>
     <string name="ui_footer">Crimson Moon · vectors, five densities · MIT</string>
-    <string name="ui_icon_count_search">%1$d shown</string>
 
     <style name="UiKicker">
         <item name="android:textColor">@color/crimson</item>

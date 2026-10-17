@@ -97,14 +97,32 @@ Installing the APK gives you a screen with three things:
    Niagara accept an apply intent, so those get a one-tap button; the rest open the
    launcher and print the exact settings path.
 2. **Browse** — every icon in the pack, searchable by label or id.
-3. **Missing icons** — the number of apps on the phone the pack has no mapping for,
-   with **Show**, **Copy** and **Share** for the list.
+3. **Coverage** — how the phone lines up with the pack, split two ways, each with
+   **Show**, plus **Copy**/**Share** for the export.
 
 That third panel is the important one. A launcher matches an icon by exact
-`package/activity` component, so "the icon didn't apply" always means "that component
-is not in `appfilter.xml`". The screen diffs the two on the device and hands you the
-exact missing components in the format the repo already reads — paste them into a file
-and run the sync below. Nothing about that list leaves the phone unless you share it.
+`package/activity` component, so an icon that refuses to apply is one of two things:
+
+| Bucket | Meaning | Fix |
+| --- | --- | --- |
+| **matched** | the device component is in `appfilter.xml` | nothing |
+| **mismatched** | the pack themes that package, but not the component your phone reports | one line — the icon already exists |
+| **missing** | no icon for that package yet | a new glyph |
+
+Mismatches are the ones that look like "missing icons" but are really a moved launcher
+activity after an app or ROM update: YouTube, for example, reports
+`com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity`, a class outside its
+own package. The screen exports both buckets in the format the sync tool below reads,
+and the build maps any device-reported component to the icon the package already uses.
+Nothing leaves the phone unless you share it.
+
+The same classification runs offline, on any dump:
+
+```bash
+npm run coverage device-components.txt             # matched / mismatched / missing
+npm run coverage -- --export device-components.txt > to-fix.txt
+npm run sync to-fix.txt && npm run build && npm run check
+```
 
 ## Apply the pack
 

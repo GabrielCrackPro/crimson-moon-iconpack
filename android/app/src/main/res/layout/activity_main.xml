@@ -109,52 +109,90 @@
 
     <LinearLayout style="@style/UiCard">
 
+        <TextView style="@style/UiSection" android:text="@string/ui_coverage_title" />
+
+        <!-- Mismatched: the pack has the icon, the phone reports another component. -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
-                style="@style/UiSection"
+                android:id="@+id/mismatch_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/ui_missing_title" />
+                android:fontFamily="monospace"
+                android:text="@string/ui_mismatch_title"
+                android:textColor="@color/sakura"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/mismatch_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/ui_text"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/mismatch_show"
+                style="@style/UiButtonGhost"
+                android:text="@string/ui_show" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/missing_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:text="@string/ui_missing_title"
+                android:textColor="@color/sakura"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/missing_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/crimson"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/ui_text"
                 android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/missing_show"
+                style="@style/UiButtonGhost"
+                android:text="@string/ui_show" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/missing_body"
+            android:id="@+id/coverage_body"
             style="@style/UiBody"
-            android:layout_marginTop="6dp" />
+            android:layout_marginTop="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/missing_copy"
+                android:id="@+id/coverage_copy"
                 style="@style/UiButtonGhost"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/ui_copy" />
 
             <Button
-                android:id="@+id/missing_show"
-                style="@style/UiButtonGhost"
-                android:layout_width="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="@string/ui_show" />
-
-            <Button
-                android:id="@+id/missing_share"
+                android:id="@+id/coverage_share"
                 style="@style/UiButton"
                 android:layout_width="0dp"
                 android:layout_marginStart="8dp"

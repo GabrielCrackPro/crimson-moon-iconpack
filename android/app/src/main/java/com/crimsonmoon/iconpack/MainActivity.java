@@ -25,18 +25,19 @@ import java.util.List;
 /**
  * The pack's own screen: apply it, browse it, and find out what it still misses.
  *
- * <p>The missing-icons list is the useful half. Launchers match icons by exact
- * {@code package/activity} component, so "an icon is missing" always means "this
- * component is not in appfilter.xml". This screen computes that difference on
- * the phone itself and exports it in the format the repo's device-sync tool
- * already reads.
+ * <p>The coverage card is the useful half. Launchers match icons by exact
+ * {@code package/activity} component, so an icon that refuses to apply is either
+ * <em>mismatched</em> (the pack has the icon, the phone reports another component)
+ * or <em>missing</em> (no icon for that package at all). The screen computes both
+ * on the phone and exports them in the format the repo's device-sync tool reads.
  */
 public class MainActivity extends Activity {
 
     private IconAdapter adapter;
     private TextView countView;
     private String[] iconNames;
-    private List<PackInfo.Missing> missing;
+    private List<PackInfo.Entry> mismatched;
+    private List<PackInfo.Entry> missing;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -44,26 +45,27 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         iconNames = PackInfo.iconNames(this);
-        missing = PackInfo.missingApps(this);
+        List<PackInfo.Entry> entries = PackInfo.entries(this);
+        mismatched = PackInfo.ofKind(entries, PackInfo.MISMATCH);
+        missing = PackInfo.ofKind(entries, PackInfo.MISSING);
+        int covered = entries.size() - mismatched.size() - missing.size();
 
-        bindHeader();
+        bindHeader(covered, entries.size());
         bindApplyCard();
         bindGrid();
-        bindMissingCard();
+        bindCoverage();
     }
 
     // ------------------------------------------------------------------ header
 
-    private void bindHeader() {
+    private void bindHeader(int covered, int total) {
         ImageView mark = findViewById(R.id.pack_mark);
         int markRes = getResources().getIdentifier("generic", "drawable", getPackageName());
         if (markRes != 0) mark.setImageResource(markRes);
 
         TextView subtitle = findViewById(R.id.pack_subtitle);
-        int installed = PackInfo.installedAppCount(this);
-        int covered = Math.max(0, installed - missing.size());
         subtitle.setText(getString(R.string.ui_icons_fmt, iconNames.length)
-                + " · " + getString(R.string.ui_coverage_fmt, covered, installed));
+                + " · " + getString(R.string.ui_coverage_fmt, covered, total));
     }
 
     // ------------------------------------------------------------- apply card
@@ -158,49 +160,45 @@ public class MainActivity extends Activity {
         countView.setText(getString(R.string.ui_icon_count_search, adapter.getCount()));
     }
 
-    // ----------------------------------------------------------- missing card
+    // ---------------------------------------------------------- coverage card
 
-    private void bindMissingCard() {
-        TextView count = findViewById(R.id.missing_count);
-        TextView bodyView = findViewById(R.id.missing_body);
+    private void bindCoverage() {
+        TextView mismatchCount = findViewById(R.id.mismatch_count);
+        TextView missingCount = findViewById(R.id.missing_count);
+        Button showMismatch = findViewById(R.id.mismatch_show);
+        Button showMissing = findViewById(R.id.missing_show);
+        TextView bodyView = findViewById(R.id.coverage_body);
         TextView hint = findViewById(R.id.export_hint);
-        Button copy = findViewById(R.id.missing_copy);
-        Button show = findViewById(R.id.missing_show);
-        Button share = findViewById(R.id.missing_share);
+        Button copy = findViewById(R.id.coverage_copy);
+        Button share = findViewById(R.id.coverage_share);
 
-        count.setText(String.valueOf(missing.size()));
+        mismatchCount.setText(String.valueOf(mismatched.size()));
+        missingCount.setText(String.valueOf(missing.size()));
 
-        if (missing.isEmpty()) {
-            bodyView.setText(R.string.ui_missing_none);
+        boolean nothingToFix = mismatched.isEmpty() && missing.isEmpty();
+        if (nothingToFix) {
+            bodyView.setText(R.string.ui_coverage_none);
             hint.setVisibility(View.GONE);
             copy.setVisibility(View.GONE);
-            show.setVisibility(View.GONE);
             share.setVisibility(View.GONE);
+            showMismatch.setVisibility(View.GONE);
+            showMissing.setVisibility(View.GONE);
             return;
         }
 
-        bodyView.setText(getString(R.string.ui_missing_body, missing.size()));
+        bodyView.setText(getString(R.string.ui_coverage_body, mismatched.size(), missing.size()));
         hint.setText(getString(R.string.ui_export_hint));
-
         copy.setOnClickListener(v -> copyList());
-        show.setOnClickListener(v -> showList());
         share.setOnClickListener(v -> shareList());
-    }
 
-    private void shareList() {
-        if (missing.isEmpty()) {
-            toast(getString(R.string.ui_nothing_missing));
-            return;
-        }
-        Intent send = new Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .putExtra(Intent.EXTRA_SUBJECT, "Crimson Moon — missing icon components")
-                .putExtra(Intent.EXTRA_TEXT, PackInfo.exportText(this));
-        startActivity(Intent.createChooser(send, getString(R.string.ui_share)));
+        showMismatch.setEnabled(!mismatched.isEmpty());
+        showMismatch.setOnClickListener(v -> showList(mismatched, R.string.ui_mismatch_title, R.string.ui_mismatch_help));
+        showMissing.setEnabled(!missing.isEmpty());
+        showMissing.setOnClickListener(v -> showList(missing, R.string.ui_missing_title, R.string.ui_missing_help));
     }
 
     private void copyList() {
-        if (missing.isEmpty()) {
+        if (mismatched.isEmpty() && missing.isEmpty()) {
             toast(getString(R.string.ui_nothing_missing));
             return;
         }
@@ -209,16 +207,31 @@ public class MainActivity extends Activity {
         toast(getString(R.string.ui_copied));
     }
 
-    private void showList() {
-        if (missing.isEmpty()) return;
-        String[] rows = new String[missing.size()];
-        for (int i = 0; i < missing.size(); i++) {
-            PackInfo.Missing item = missing.get(i);
-            rows[i] = item.label + "\n" + item.component;
+    private void shareList() {
+        if (mismatched.isEmpty() && missing.isEmpty()) {
+            toast(getString(R.string.ui_nothing_missing));
+            return;
+        }
+        Intent send = new Intent(Intent.ACTION_SEND)
+                .setType("text/plain")
+                .putExtra(Intent.EXTRA_SUBJECT, "Crimson Moon — components to add")
+                .putExtra(Intent.EXTRA_TEXT, PackInfo.exportText(this));
+        startActivity(Intent.createChooser(send, getString(R.string.ui_share)));
+    }
+
+    private void showList(List<PackInfo.Entry> entries, int titleRes, int helpRes) {
+        if (entries.isEmpty()) {
+            toast(getString(R.string.ui_nothing_missing));
+            return;
+        }
+        String[] rows = new String[entries.size()];
+        for (int i = 0; i < entries.size(); i++) {
+            PackInfo.Entry entry = entries.get(i);
+            rows[i] = entry.label + "\n" + entry.component;
         }
         new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.ui_missing_title) + " · " + missing.size())
-
+                .setTitle(getString(titleRes) + " · " + entries.size())
+                .setMessage(getString(helpRes))
                 .setItems(rows, null)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();

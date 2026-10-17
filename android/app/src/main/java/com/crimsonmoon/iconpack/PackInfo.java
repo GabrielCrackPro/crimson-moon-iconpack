@@ -10,10 +10,9 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -22,17 +21,41 @@ import java.util.TreeMap;
  * <p>Both XML files are looked up by name at runtime rather than through the
  * {@code R} class, so this module still compiles before {@code npm run build}
  * has produced them.
+ *
+ * <p>Launchers match icons by exact {@code package/activity} component. That
+ * splits the apps on a phone into three groups, and the middle one is the
+ * interesting one:
+ *
+ * <ul>
+ *   <li>{@link #COVERED} — the exact component is in appfilter.xml.</li>
+ *   <li>{@link #MISMATCH} — the pack ships an icon for this <em>package</em>,
+ *       but not for the component the phone actually reports, so the icon
+ *       silently refuses to apply. Usually a ROM or app update moved the
+ *       launcher activity.</li>
+ *   <li>{@link #MISSING} — the pack has no icon for this package at all.</li>
+ * </ul>
+ *
+ * <p>Both non-covered groups are fixed by the same file, so they share one
+ * export.
  */
 final class PackInfo {
 
-    /** An installed app whose launcher component the pack has no icon for. */
-    static final class Missing {
+    static final int COVERED = 0;
+    static final int MISMATCH = 1;
+    static final int MISSING = 2;
+
+    /** One installed launcher entry and how the pack relates to it. */
+    static final class Entry {
         final String label;
         final String component;
+        final String drawable;
+        final int kind;
 
-        Missing(String label, String component) {
+        Entry(String label, String component, String drawable, int kind) {
             this.label = label;
             this.component = component;
+            this.drawable = drawable;
+            this.kind = kind;
         }
     }
 
@@ -67,76 +90,99 @@ final class PackInfo {
         return names.toArray(new String[0]);
     }
 
-    /** Components the appfilter maps to an icon, as {@code package/activity}. */
-    static Set<String> coveredComponents(Context ctx) {
-        Set<String> covered = new HashSet<>();
+    /** appfilter.xml as both component → drawable and package → drawable. */
+    private static void readMappings(Context ctx, Map<String, String> byComponent, Map<String, String> byPackage) {
         XmlResourceParser parser = open(ctx, "appfilter");
-        if (parser == null) return covered;
+        if (parser == null) return;
         try {
             int event;
             while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
                 if (event != XmlPullParser.START_TAG || !"item".equals(parser.getName())) continue;
+                String drawable = parser.getAttributeValue(null, "drawable");
                 String component = parser.getAttributeValue(null, "component");
-                if (component == null) continue;
+                if (drawable == null || component == null) continue;
                 int start = component.indexOf('{');
                 int end = component.lastIndexOf('}');
                 if (start >= 0 && end > start) component = component.substring(start + 1, end);
-                if (!component.isEmpty()) covered.add(component);
+                if (component.isEmpty()) continue;
+                byComponent.put(component, drawable);
+                int slash = component.indexOf('/');
+                if (slash > 0) byPackage.putIfAbsent(component.substring(0, slash), drawable);
             }
         } catch (Exception ignored) {
             // Same reasoning as above.
         } finally {
             parser.close();
         }
-        return covered;
     }
 
-    /** Launcher apps on this phone that the pack has no mapping for. */
-    static List<Missing> missingApps(Context ctx) {
-        Set<String> covered = coveredComponents(ctx);
+    /** Every launcher app on this phone, classified, one line per app. */
+    static List<Entry> entries(Context ctx) {
+        Map<String, String> byComponent = new HashMap<>();
+        Map<String, String> byPackage = new HashMap<>();
+        readMappings(ctx, byComponent, byPackage);
+
         PackageManager pm = ctx.getPackageManager();
         String self = ctx.getPackageName();
-
         Intent launcher = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> installed = pm.queryIntentActivities(launcher, 0);
 
-        // Keyed by label so an app with several launcher activities is listed once.
-        Map<String, Missing> byLabel = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        for (ResolveInfo info : installed) {
+        // Keyed by label: an app with several launcher activities is one row, and
+        // a component the pack does not match outranks one it does.
+        Map<String, Entry> byLabel = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        for (ResolveInfo info : pm.queryIntentActivities(launcher, 0)) {
             if (info.activityInfo == null) continue;
             String pkg = info.activityInfo.packageName;
             if (self.equals(pkg)) continue;
             String component = pkg + "/" + info.activityInfo.name;
-            if (covered.contains(component)) continue;
+
+            String exact = byComponent.get(component);
+            String drawable = exact != null ? exact : byPackage.get(pkg);
+            int kind = exact != null ? COVERED : (drawable != null ? MISMATCH : MISSING);
+
             String label = String.valueOf(info.loadLabel(pm));
-            if (!byLabel.containsKey(label)) byLabel.put(label, new Missing(label, component));
+            Entry existing = byLabel.get(label);
+            if (existing == null || (existing.kind == COVERED && kind != COVERED)) {
+                byLabel.put(label, new Entry(label, component, drawable, kind));
+            }
         }
         return new ArrayList<>(byLabel.values());
     }
 
-    /** Distinct launcher packages installed on this phone. */
-    static int installedAppCount(Context ctx) {
-        PackageManager pm = ctx.getPackageManager();
-        Intent launcher = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
-        Set<String> packages = new HashSet<>();
-        for (ResolveInfo info : pm.queryIntentActivities(launcher, 0)) {
-            if (info.activityInfo != null) packages.add(info.activityInfo.packageName);
+    static List<Entry> ofKind(List<Entry> entries, int kind) {
+        List<Entry> out = new ArrayList<>();
+        for (Entry entry : entries) {
+            if (entry.kind == kind) out.add(entry);
         }
-        packages.remove(ctx.getPackageName());
-        return packages.size();
+        return out;
     }
 
     /**
-     * The missing components as plain {@code package/activity} lines — the exact
-     * format tools/sync-components.mjs reads from a device dump.
+     * Every component the pack does not match, in plain {@code package/activity}
+     * lines — the format tools/sync-components.mjs reads from a device dump.
      */
     static String exportText(Context ctx) {
+        List<Entry> all = entries(ctx);
+        List<Entry> mismatched = ofKind(all, MISMATCH);
+        List<Entry> missing = ofKind(all, MISSING);
+
         StringBuilder out = new StringBuilder();
-        out.append("# Crimson Moon — launcher components this build does not cover.\n");
+        out.append("# Crimson Moon — components this build does not match.\n");
         out.append("# Save as a file, then run: node tools/sync-components.mjs <file>\n");
-        for (Missing missing : missingApps(ctx)) {
-            out.append(missing.component).append('\n');
+        if (!mismatched.isEmpty()) {
+            out.append("#\n# The pack has an icon for these apps, but your phone reports a\n");
+            out.append("# different launcher component, so the icon never applied:\n");
+            for (Entry entry : mismatched) {
+                out.append("#   ").append(entry.label).append(" -> ").append(entry.drawable).append('\n');
+            }
         }
+        for (Entry entry : mismatched) out.append(entry.component).append('\n');
+        if (!missing.isEmpty()) {
+            out.append("#\n# No icon in the pack for these apps yet:\n");
+            for (Entry entry : missing) {
+                out.append("#   ").append(entry.label).append('\n');
+            }
+        }
+        for (Entry entry : missing) out.append(entry.component).append('\n');
         return out.toString();
     }
 }
