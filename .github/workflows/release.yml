@@ -129,7 +129,7 @@ jobs:
           set -euo pipefail
           APK=android/app/build/outputs/apk/release/app-release.apk
           test -f "$APK" || { echo "::error::$APK was not produced"; exit 1; }
-          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner"
+          APKSIGNER="${ANDROID_SDK_ROOT:-$ANDROID_HOME}/build-tools/$BUILD_TOOLS/apksigner"
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee /tmp/verify.txt
           grep -q "Verified using v2 scheme (APK Signature Scheme v2): true" /tmp/verify.txt
 
@@ -161,24 +161,24 @@ jobs:
           APK: ${{ steps.assets.outputs.apk }}
         run: |
           set -euo pipefail
-          BODY=$(cat <<EOF
-          Signed Crimson Moon icon pack $NAME.
-
-          - \`versionName\`: $NAME
-          - \`versionCode\`: ${{ steps.version.outputs.code }}
-          - Signed with the repository release key (APK Signature Scheme v2 verified in CI).
-          - SHA-256 of the APK is published alongside it.
-
-          **Install**: \`adb install $APK\`, then pick the pack in your launcher's icon-pack settings.
-          EOF
-          )
+          {
+            echo "Signed Crimson Moon icon pack $NAME."
+            echo
+            echo "- \`versionName\`: $NAME"
+            echo "- \`versionCode\`: ${{ steps.version.outputs.code }}"
+            echo "- Signed with the repository release key; APK Signature Scheme v2 is verified in CI."
+            echo "- SHA-256 of the APK is published alongside it."
+            echo
+            echo "**Install**: \`adb install $APK\`, then pick the pack in your launcher's icon-pack settings."
+          } > notes.md
+          cat notes.md
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$APK" "$APK.sha256" --clobber
-            gh release edit "$TAG" --title "Crimson Moon $NAME" --notes "$BODY"
+            gh release edit "$TAG" --title "Crimson Moon $NAME" --notes-file notes.md
           else
             gh release create "$TAG" "$APK" "$APK.sha256" \
               --title "Crimson Moon $NAME" \
-              --notes "$BODY" \
+              --notes-file notes.md \
               --verify-tag
           fi
 
