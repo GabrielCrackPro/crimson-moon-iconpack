@@ -7,7 +7,7 @@ plugins {
 val keystorePath: String? = System.getenv("CM_KEYSTORE_PATH")
 val keystorePassword: String? = System.getenv("CM_KEYSTORE_PASSWORD")
 val keyAliasValue: String? = System.getenv("CM_KEY_ALIAS")
-val keyPassword: String? = System.getenv("CM_KEY_PASSWORD")
+val keyPasswordValue: String? = System.getenv("CM_KEY_PASSWORD")
 
 val ciVersionName: String? = (findProperty("appVersionName") as String?)
 val ciVersionCode: Int? = (findProperty("appVersionCode") as String?)?.toIntOrNull()
@@ -29,8 +29,8 @@ android {
             create("release") {
                 storeFile = file(keystorePath)
                 storePassword = keystorePassword
-                this.keyAlias = keyAliasValue
-                this.keyPassword = keyPassword
+                keyAlias = keyAliasValue
+                keyPassword = keyPasswordValue
                 enableV1Signing = true
                 enableV2Signing = true
                 enableV3Signing = true
