@@ -29,10 +29,10 @@
 <!-- 49 units wide: corner-safe inside the 72 dp circular mask, which crops the 108 dp layer -->
 <g transform="translate(29.4 29.4) scale(2.05)">
     <g filter="url(#glow)" opacity="0.55">
-      <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M5.3 7.7h13.4l1 12.3H4.3Z"/><path d="M8.7 10.1V7.3a3.3 3.3 0 0 1 6.6 0v2.8"/></g>
+      <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15.6V9l3.4 3.4L11.8 9v6.6"/><path d="M15 15.6L15 9"/><path d="M18.6 15.6L18.6 9"/><path d="M18.6 9.4L15 9.4"/></g>
       <g fill="url(#glyph)"></g>
     </g>
-    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M5.3 7.7h13.4l1 12.3H4.3Z"/><path d="M8.7 10.1V7.3a3.3 3.3 0 0 1 6.6 0v2.8"/></g>
+    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15.6V9l3.4 3.4L11.8 9v6.6"/><path d="M15 15.6L15 9"/><path d="M18.6 15.6L18.6 9"/><path d="M18.6 9.4L15 9.4"/></g>
     <g fill="url(#glyph)"></g>
   </g>
 </svg>

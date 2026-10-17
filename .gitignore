@@ -4,6 +4,9 @@ src/device-components.json
 src/monograms.json
 src/monogram-overrides.json
 
+# Official icons downloaded as drawing references: never shipped or committed.
+refs/
+
 # Signing material: never commit the release key.
 keys/
 *.jks

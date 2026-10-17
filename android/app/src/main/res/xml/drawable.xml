@@ -7,7 +7,7 @@
     <item drawable="photos"/>
     <item drawable="gallery"/>
     <item drawable="browser"/>
-    <item drawable="mail"/>
+    <item drawable="gmail"/>
     <item drawable="calendar"/>
     <item drawable="clock"/>
     <item drawable="calculator"/>
@@ -66,7 +66,7 @@
     <item drawable="prime"/>
     <item drawable="bank"/>
     <item drawable="coin"/>
-    <item drawable="chart"/>
+    <item drawable="robinhood"/>
     <item drawable="minecraft"/>
     <item drawable="pokemon"/>
     <item drawable="uber"/>

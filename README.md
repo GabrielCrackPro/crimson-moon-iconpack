@@ -28,6 +28,8 @@ Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the
 | `src/pack-icon.mjs` | The pack's own launcher icon (torii + moon, adaptive layers) |
 | `tools/build.mjs` | Rasteriser + resource generator |
 | `tools/check.mjs` | Validates the generated resources |
+| `tools/fetch-refs.mjs` | Downloads each app's official icon into `refs/` for drawing |
+| `tools/review-sheet.mjs` | Review page: official icon vs the current drawing |
 | `icons/svg/` | 512 px SVG source of every icon |
 | `icons/foreground/` | Adaptive foreground SVGs (108 dp canvas) |
 | `icons/png/<density>/` | 48 / 72 / 96 / 144 / 192 px PNGs |
@@ -238,6 +240,26 @@ Overrides live in `src/monogram-overrides.json`, separate from the generated
 `src/monograms.json`, so re-running `--uncovered` never loses your corrections.
 `npm run check` fails if an override is malformed or points at a package that no longer
 has a monogram.
+
+## Where the brand icons come from
+
+No brand mark in this pack is invented. Every app's drawing starts from the icon on that
+app's own store listing:
+
+```bash
+node tools/fetch-refs.mjs            # official icons -> refs/  (gitignored, never shipped)
+node tools/fetch-refs.mjs --only spotify,f1
+node tools/review-sheet.mjs          # reference beside the current drawing
+npm run serve                        # then open preview/_review.html
+```
+
+The review sheet pairs each app's real icon with what the pack ships, and flags any two
+apps that share one drawing. Working method: fetch, review the sheet, redraw the glyph
+from the reference in the pack's monoline 24×24 style, re-review, then build.
+
+Eighteen system apps have no store listing at all (`com.android.settings`, the MIUI apps,
+the Play Store itself, and so on); those keep a symbol drawn from the platform's own icon,
+and `refs/index.json` records the reason for every app without a reference.
 
 ## Add or change an app
 

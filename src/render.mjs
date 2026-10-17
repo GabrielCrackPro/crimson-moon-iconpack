@@ -69,7 +69,8 @@ function glyphBody(name) {
   let stroked = "";
   for (const el of glyph) {
     if (typeof el === "string") stroked += el;
-    else if (el.solid) solid += `<path d="${el.d}"/>`;
+    else if (el.solid)
+      solid += `<path d="${el.d}"${el.t ? ` transform="${el.t}"` : ""}/>`;
   }
   return { solid, stroked };
 }

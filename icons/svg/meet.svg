@@ -49,10 +49,10 @@
   <circle cx="54" cy="54" r="30" fill="url(#bloom)" opacity="0.85"/>
 <g transform="translate(22 22) scale(2.65)">
   <g filter="url(#glow)" opacity="0.55">
-    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="10.4" r="2.3"/><path d="M7.6 16.8c.5-2 2.3-3.2 4.4-3.2s3.9 1.2 4.4 3.2"/></g>
+    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="7.8" width="11.2" height="8.4" rx="2.6"/><path d="M14.6 9.4 20.6 12 14.6 14.6Z"/><circle cx="6.6" cy="12" r="1.05" class="solid"/></g>
     <g fill="url(#glyph)"></g>
   </g>
-  <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="10.4" r="2.3"/><path d="M7.6 16.8c.5-2 2.3-3.2 4.4-3.2s3.9 1.2 4.4 3.2"/></g>
+  <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="7.8" width="11.2" height="8.4" rx="2.6"/><path d="M14.6 9.4 20.6 12 14.6 14.6Z"/><circle cx="6.6" cy="12" r="1.05" class="solid"/></g>
   <g fill="url(#glyph)"></g>
 </g>
 </g>

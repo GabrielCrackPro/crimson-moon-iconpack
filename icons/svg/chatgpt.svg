@@ -49,10 +49,10 @@
   <circle cx="54" cy="54" r="30" fill="url(#bloom)" opacity="0.85"/>
 <g transform="translate(22 22) scale(2.65)">
   <g filter="url(#glow)" opacity="0.55">
-    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.2" r="4.5"/><circle cx="9.1" cy="14.6" r="4.5"/><circle cx="14.9" cy="14.6" r="4.5"/></g>
+    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M12.0 5.8Q17.8 2.0 17.4 8.9L17.4 8.9Q23.6 12.0 17.4 15.1L17.4 15.1Q17.8 22.0 12.0 18.2L12.0 18.2Q6.2 22.0 6.6 15.1L6.6 15.1Q0.4 12.0 6.6 8.9L6.6 8.9Q6.2 2.0 12.0 5.8Z"/></g>
     <g fill="url(#glyph)"></g>
   </g>
-  <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.2" r="4.5"/><circle cx="9.1" cy="14.6" r="4.5"/><circle cx="14.9" cy="14.6" r="4.5"/></g>
+  <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M12.0 5.8Q17.8 2.0 17.4 8.9L17.4 8.9Q23.6 12.0 17.4 15.1L17.4 15.1Q17.8 22.0 12.0 18.2L12.0 18.2Q6.2 22.0 6.6 15.1L6.6 15.1Q0.4 12.0 6.6 8.9L6.6 8.9Q6.2 2.0 12.0 5.8Z"/></g>
   <g fill="url(#glyph)"></g>
 </g>
 </g>

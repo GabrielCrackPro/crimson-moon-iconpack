@@ -29,10 +29,10 @@
 <!-- 49 units wide: corner-safe inside the 72 dp circular mask, which crops the 108 dp layer -->
 <g transform="translate(29.4 29.4) scale(2.05)">
     <g filter="url(#glow)" opacity="0.55">
-      <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 5.2 10 9.6H4.8Z"/><circle cx="16.6" cy="7.4" r="2.25"/><path d="M5.2 14.4L9.8 19"/><path d="M9.8 14.4L5.2 19"/><rect x="14.4" y="14.4" width="4.6" height="4.6" rx="0.9"/></g>
+      <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M11.4 4.6L11.4 13.6"/><path d="M11.4 4.6h2.8a2.8 2.8 0 0 1 0 5.6h-2.8"/><path d="M5 17.6h10.4a2.6 2.6 0 0 0 2.5-1.7"/><path d="M5 17.6c0-1.4 1-2.4 2.6-2.4h3.8"/></g>
       <g fill="url(#glyph)"></g>
     </g>
-    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 5.2 10 9.6H4.8Z"/><circle cx="16.6" cy="7.4" r="2.25"/><path d="M5.2 14.4L9.8 19"/><path d="M9.8 14.4L5.2 19"/><rect x="14.4" y="14.4" width="4.6" height="4.6" rx="0.9"/></g>
+    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M11.4 4.6L11.4 13.6"/><path d="M11.4 4.6h2.8a2.8 2.8 0 0 1 0 5.6h-2.8"/><path d="M5 17.6h10.4a2.6 2.6 0 0 0 2.5-1.7"/><path d="M5 17.6c0-1.4 1-2.4 2.6-2.4h3.8"/></g>
     <g fill="url(#glyph)"></g>
   </g>
 </svg>

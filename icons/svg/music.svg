@@ -49,10 +49,10 @@
   <circle cx="54" cy="54" r="30" fill="url(#bloom)" opacity="0.85"/>
 <g transform="translate(22 22) scale(2.65)">
   <g filter="url(#glow)" opacity="0.55">
-    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M9.8 17.4V6.4l9.2-2.2v11.2"/><circle cx="7.4" cy="17.4" r="2.4"/><circle cx="16.6" cy="15.2" r="2.4"/></g>
+    <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.8"/><path d="M10.1 8.5 15.7 12 10.1 15.5Z"/></g>
     <g fill="url(#glyph)"></g>
   </g>
-  <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><path d="M9.8 17.4V6.4l9.2-2.2v11.2"/><circle cx="7.4" cy="17.4" r="2.4"/><circle cx="16.6" cy="15.2" r="2.4"/></g>
+  <g fill="none" stroke="url(#glyph)" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.8"/><path d="M10.1 8.5 15.7 12 10.1 15.5Z"/></g>
   <g fill="url(#glyph)"></g>
 </g>
 </g>
