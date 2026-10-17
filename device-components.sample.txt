@@ -1,0 +1,12 @@
+# Sample device dump — every accepted format. Replace this file with real
+# output from:
+#   adb shell cmd package query-activities --brief \
+#     -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
+# then run: node tools/sync-components.mjs
+
+  com.whatsapp/com.whatsapp.Main
+  com.spotify.music/.MainActivity
+  com.netflix.mediaclient/com.netflix.mediaclient.ui.launch.UIWebViewActivity filter 4a2b1c
+  com.discord/com.discord.app.AppActivity$Main
+package:com.trello
+  com.foo.uncovered/com.foo.uncovered.Main

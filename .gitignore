@@ -1,0 +1,12 @@
+# Device-specific state: reveals which apps are installed. Keep local.
+device-components.txt
+src/device-components.json
+src/monograms.json
+src/monogram-overrides.json
+
+node_modules/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+.DS_Store

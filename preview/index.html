@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crimson Moon — icon pack</title>
+<style>
+  :root{
+    --ink:#050306; --plate:#0d0409; --crimson:#ff2f5d; --sakura:#ff7e9d; --deep:#a30a26;
+    --hair:rgba(255,63,107,.18); --text:#f6e7ec; --dim:rgba(246,231,236,.5);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ink);color:var(--text);
+    font:14px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:64px 28px 96px}
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap;margin-bottom:56px}
+  .kicker{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--crimson);margin:0 0 14px}
+  h1{font-size:clamp(34px,5vw,58px);line-height:.98;margin:0;font-weight:600;letter-spacing:-.03em}
+  h1 span{display:block;color:var(--deep);font-weight:300;font-style:italic;letter-spacing:-.01em}
+  .lede{max-width:34ch;color:var(--dim);margin:0;font-size:13.5px}
+  .layout{display:grid;grid-template-columns:minmax(0,390px) 1fr;gap:56px;align-items:start;min-width:0}
+  .layout>*{min-width:0}
+  @media (max-width:900px){
+    .wrap{padding:40px 18px 64px}
+    .layout{grid-template-columns:1fr;gap:36px}
+    .panel{padding:20px 16px 24px}
+  }
+  /* phone */
+  .phone{position:relative;width:100%;max-width:390px;aspect-ratio:390/844;border-radius:52px;
+    border:1px solid rgba(255,63,107,.28);overflow:hidden;
+    box-shadow:0 60px 120px -40px rgba(255,47,93,.35),0 0 0 9px #0a0507,0 0 0 10px rgba(255,63,107,.14);
+    background:#000 url("./wallpaper.png") center/cover no-repeat;}
+  .phone::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,6,.72),rgba(5,3,6,.2) 34%,rgba(5,3,6,.34))}
+  .notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:104px;height:24px;background:#040205;border-radius:14px;z-index:3}
+  .screen{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;padding:46px 18px 22px}
+  .status{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,225,232,.8);padding:0 10px 18px}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px 6px;flex:1;align-content:start}
+  .app{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .app img{width:54px;height:54px}
+  .app span{font-size:9px;letter-spacing:.01em;color:rgba(255,232,238,.78);text-shadow:0 1px 3px #000;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dock{display:flex;justify-content:space-around;align-items:center;gap:12px;
+    margin-top:14px;padding:12px 8px;border-radius:26px;background:rgba(10,4,8,.52);
+    border:1px solid rgba(255,63,107,.16)}
+  .dock .app span{display:none}
+  .dock img{width:46px;height:46px}
+  @media (max-width:440px){
+    .screen{padding:40px 12px 16px}
+    .grid{gap:12px 4px}
+    .app img{width:42px;height:42px}
+    .app span{font-size:8px}
+    .dock img{width:38px;height:38px}
+    .dock{border-radius:20px;padding:10px 6px}
+  }
+  /* sheet */
+  .panel{border:1px solid var(--hair);border-radius:18px;padding:26px 26px 30px;
+    background:linear-gradient(160deg,rgba(255,47,93,.06),rgba(5,3,6,0) 42%)}
+  .panel h2{margin:0 0 4px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--sakura);font-weight:600}
+  .panel p.sub{margin:0 0 24px;color:var(--dim);font-size:12.5px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:18px 10px}
+  .tile{margin:0;text-align:center}
+  .tile img{width:76px;height:76px}
+  figcaption{font-size:10.5px;color:rgba(246,231,236,.72);margin-top:2px;display:flex;flex-direction:column}
+  figcaption em{font-style:normal;font-size:9px;color:rgba(246,231,236,.32);letter-spacing:.06em}
+  .mono{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:10px}
+  .mono img{width:100%;max-width:76px;justify-self:center}
+  .sizes{display:flex;flex-wrap:wrap;gap:24px 34px;align-items:flex-end;margin:22px 0 6px}
+  .sizes div{text-align:center;font-size:10px;color:var(--dim)}
+  .sizes img{display:block;margin:0 auto 8px;image-rendering:auto}
+  footer{margin-top:40px;color:rgba(246,231,236,.3);font-size:11px;letter-spacing:.02em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="kicker">Icon pack · 70 apps · Android</p>
+      <h1>Crimson Moon<span>neon-noir home screen set</span></h1>
+    </div>
+    <p class="lede">Black plates, a bleeding moon bloom, and sakura-crimson monoline strokes.
+    Drawn as vectors, rendered at every launcher density.</p>
+  </header>
+
+  <div class="layout">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="status"><span>9:41</span><span>▾ ▮ ▰</span></div>
+        <div class="grid">
+          <div class="app "><img src="../icons/png/xxxhdpi/phone.png" alt="Phone"><span>Phone</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/messages.png" alt="Messages"><span>Messages</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/contacts.png" alt="Contacts"><span>Contacts</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/browser.png" alt="Chrome"><span>Chrome</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/mail.png" alt="Gmail"><span>Gmail</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/camera.png" alt="Camera"><span>Camera</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/photos.png" alt="Photos"><span>Photos</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/play.png" alt="Play Store"><span>Play Store</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/youtube.png" alt="YouTube"><span>YouTube</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/maps.png" alt="Maps"><span>Maps</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/calendar.png" alt="Calendar"><span>Calendar</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/clock.png" alt="Clock"><span>Clock</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/calculator.png" alt="Calculator"><span>Calculator</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/settings.png" alt="Settings"><span>Settings</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/spotify.png" alt="Spotify"><span>Spotify</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/whatsapp.png" alt="WhatsApp"><span>WhatsApp</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/instagram.png" alt="Instagram"><span>Instagram</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/telegram.png" alt="Telegram"><span>Telegram</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/netflix.png" alt="Netflix"><span>Netflix</span></div>
+          <div class="app "><img src="../icons/png/xxxhdpi/files.png" alt="Files"><span>Files</span></div>
+        </div>
+        <div class="dock"><div class="app "><img src="../icons/png/xxxhdpi/phone.png" alt="Phone"><span>Phone</span></div><div class="app "><img src="../icons/png/xxxhdpi/messages.png" alt="Messages"><span>Messages</span></div><div class="app "><img src="../icons/png/xxxhdpi/browser.png" alt="Chrome"><span>Chrome</span></div><div class="app "><img src="../icons/png/xxxhdpi/camera.png" alt="Camera"><span>Camera</span></div></div>
+      </div>
+    </div>
+
+    <div>
+      <section class="panel">
+        <h2>The set</h2>
+        <p class="sub">Every plate shares the same bloom and glow — so third-party apps still read as one family.</p>
+        <div class="tiles">
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/phone.png" alt="Phone">
+        <figcaption>Phone<em>phone</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/messages.png" alt="Messages">
+        <figcaption>Messages<em>messages</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/contacts.png" alt="Contacts">
+        <figcaption>Contacts<em>contacts</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/camera.png" alt="Camera">
+        <figcaption>Camera<em>camera</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/photos.png" alt="Photos">
+        <figcaption>Photos<em>photos</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/gallery.png" alt="Gallery">
+        <figcaption>Gallery<em>gallery</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/browser.png" alt="Chrome">
+        <figcaption>Chrome<em>browser</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/mail.png" alt="Gmail">
+        <figcaption>Gmail<em>mail</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/calendar.png" alt="Calendar">
+        <figcaption>Calendar<em>calendar</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/clock.png" alt="Clock">
+        <figcaption>Clock<em>clock</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/calculator.png" alt="Calculator">
+        <figcaption>Calculator<em>calculator</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/settings.png" alt="Settings">
+        <figcaption>Settings<em>settings</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/play.png" alt="Play Store">
+        <figcaption>Play Store<em>play</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/youtube.png" alt="YouTube">
+        <figcaption>YouTube<em>youtube</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/maps.png" alt="Maps">
+        <figcaption>Maps<em>maps</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/drive.png" alt="Drive">
+        <figcaption>Drive<em>drive</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/keep.png" alt="Keep">
+        <figcaption>Keep<em>keep</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/files.png" alt="Files">
+        <figcaption>Files<em>files</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/music.png" alt="Music">
+        <figcaption>Music<em>music</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/podcasts.png" alt="Podcasts">
+        <figcaption>Podcasts<em>podcasts</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/wallet.png" alt="Wallet">
+        <figcaption>Wallet<em>wallet</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/whatsapp.png" alt="WhatsApp">
+        <figcaption>WhatsApp<em>whatsapp</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/instagram.png" alt="Instagram">
+        <figcaption>Instagram<em>instagram</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/facebook.png" alt="Facebook">
+        <figcaption>Facebook<em>facebook</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/tiktok.png" alt="TikTok">
+        <figcaption>TikTok<em>tiktok</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/x.png" alt="X">
+        <figcaption>X<em>x</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/telegram.png" alt="Telegram">
+        <figcaption>Telegram<em>telegram</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/netflix.png" alt="Netflix">
+        <figcaption>Netflix<em>netflix</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/spotify.png" alt="Spotify">
+        <figcaption>Spotify<em>spotify</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/amazon.png" alt="Amazon">
+        <figcaption>Amazon<em>amazon</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/slack.png" alt="Slack">
+        <figcaption>Slack<em>slack</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/zoom.png" alt="Zoom">
+        <figcaption>Zoom<em>zoom</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/teams.png" alt="Teams">
+        <figcaption>Teams<em>teams</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/linkedin.png" alt="LinkedIn">
+        <figcaption>LinkedIn<em>linkedin</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/pinterest.png" alt="Pinterest">
+        <figcaption>Pinterest<em>pinterest</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/twitch.png" alt="Twitch">
+        <figcaption>Twitch<em>twitch</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/outlook.png" alt="Outlook">
+        <figcaption>Outlook<em>outlook</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/termux.png" alt="Termux">
+        <figcaption>Termux<em>termux</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/github.png" alt="GitHub">
+        <figcaption>GitHub<em>github</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/weather.png" alt="Weather">
+        <figcaption>Weather<em>weather</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/docs.png" alt="Docs">
+        <figcaption>Docs<em>docs</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/sheets.png" alt="Sheets">
+        <figcaption>Sheets<em>sheets</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/slides.png" alt="Slides">
+        <figcaption>Slides<em>slides</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/meet.png" alt="Meet">
+        <figcaption>Meet<em>meet</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/tasks.png" alt="Tasks">
+        <figcaption>Tasks<em>tasks</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/news.png" alt="News">
+        <figcaption>News<em>news</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/earth.png" alt="Earth">
+        <figcaption>Earth<em>earth</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/books.png" alt="Play Books">
+        <figcaption>Play Books<em>books</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/games.png" alt="Play Games">
+        <figcaption>Play Games<em>games</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/recorder.png" alt="Recorder">
+        <figcaption>Recorder<em>recorder</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/notion.png" alt="Notion">
+        <figcaption>Notion<em>notion</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/trello.png" alt="Trello">
+        <figcaption>Trello<em>trello</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/capcut.png" alt="CapCut">
+        <figcaption>CapCut<em>capcut</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/lightroom.png" alt="Lightroom">
+        <figcaption>Lightroom<em>lightroom</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/discord.png" alt="Discord">
+        <figcaption>Discord<em>discord</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/reddit.png" alt="Reddit">
+        <figcaption>Reddit<em>reddit</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/snapchat.png" alt="Snapchat">
+        <figcaption>Snapchat<em>snapchat</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/signal.png" alt="Signal">
+        <figcaption>Signal<em>signal</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/messenger.png" alt="Messenger">
+        <figcaption>Messenger<em>messenger</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/firefox.png" alt="Firefox">
+        <figcaption>Firefox<em>firefox</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/brave.png" alt="Brave">
+        <figcaption>Brave<em>brave</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/kindle.png" alt="Kindle">
+        <figcaption>Kindle<em>kindle</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/disney.png" alt="Disney+">
+        <figcaption>Disney+<em>disney</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/prime.png" alt="Prime Video">
+        <figcaption>Prime Video<em>prime</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/bank.png" alt="Bank">
+        <figcaption>Bank<em>bank</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/coin.png" alt="Coinbase">
+        <figcaption>Coinbase<em>coin</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/chart.png" alt="Robinhood">
+        <figcaption>Robinhood<em>chart</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/minecraft.png" alt="Minecraft">
+        <figcaption>Minecraft<em>minecraft</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/pokemon.png" alt="Pokemon GO">
+        <figcaption>Pokemon GO<em>pokemon</em></figcaption>
+      </figure>
+<figure class="tile">
+        <img src="../icons/png/xxxhdpi/uber.png" alt="Uber">
+        <figcaption>Uber<em>uber</em></figcaption>
+      </figure>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:22px">
+        <h2>Fallbacks</h2>
+        <p class="sub">An app the pack doesn't cover gets its initials on the same plate — no glyph needed.</p>
+        <div class="tiles mono">
+          <img src="../letters/png/xxxhdpi/a.png" alt="monogram A">
+          <img src="../letters/png/xxxhdpi/b.png" alt="monogram B">
+          <img src="../letters/png/xxxhdpi/c.png" alt="monogram C">
+          <img src="../letters/png/xxxhdpi/d.png" alt="monogram D">
+          <img src="../letters/png/xxxhdpi/e.png" alt="monogram E">
+          <img src="../letters/png/xxxhdpi/f.png" alt="monogram F">
+          <img src="../letters/png/xxxhdpi/g.png" alt="monogram G">
+          <img src="../letters/png/xxxhdpi/h.png" alt="monogram H">
+          <img src="../letters/png/xxxhdpi/i.png" alt="monogram I">
+          <img src="../letters/png/xxxhdpi/j.png" alt="monogram J">
+          <img src="../letters/png/xxxhdpi/k.png" alt="monogram K">
+          <img src="../letters/png/xxxhdpi/l.png" alt="monogram L">
+          <img src="../letters/png/xxxhdpi/m.png" alt="monogram M">
+          <img src="../letters/png/xxxhdpi/n.png" alt="monogram N">
+          <img src="../letters/png/xxxhdpi/o.png" alt="monogram O">
+          <img src="../letters/png/xxxhdpi/p.png" alt="monogram P">
+          <img src="../letters/png/xxxhdpi/q.png" alt="monogram Q">
+          <img src="../letters/png/xxxhdpi/r.png" alt="monogram R">
+          <img src="../letters/png/xxxhdpi/s.png" alt="monogram S">
+          <img src="../letters/png/xxxhdpi/t.png" alt="monogram T">
+          <img src="../letters/png/xxxhdpi/u.png" alt="monogram U">
+          <img src="../letters/png/xxxhdpi/v.png" alt="monogram V">
+          <img src="../letters/png/xxxhdpi/w.png" alt="monogram W">
+          <img src="../letters/png/xxxhdpi/x.png" alt="monogram X">
+          <img src="../letters/png/xxxhdpi/y.png" alt="monogram Y">
+          <img src="../letters/png/xxxhdpi/z.png" alt="monogram Z">
+          <img src="../letters/png/xxxhdpi/0.png" alt="monogram 0">
+          <img src="../letters/png/xxxhdpi/1.png" alt="monogram 1">
+          <img src="../letters/png/xxxhdpi/2.png" alt="monogram 2">
+          <img src="../letters/png/xxxhdpi/3.png" alt="monogram 3">
+          <img src="../letters/png/xxxhdpi/4.png" alt="monogram 4">
+          <img src="../letters/png/xxxhdpi/5.png" alt="monogram 5">
+          <img src="../letters/png/xxxhdpi/6.png" alt="monogram 6">
+          <img src="../letters/png/xxxhdpi/7.png" alt="monogram 7">
+          <img src="../letters/png/xxxhdpi/8.png" alt="monogram 8">
+          <img src="../letters/png/xxxhdpi/9.png" alt="monogram 9">
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:22px">
+        <h2>Scale check</h2>
+        <p class="sub">One glyph at launcher sizes. Strokes are tuned to survive mdpi.</p>
+        <div class="sizes">
+          <div><img src="../icons/png/mdpi/messages.png" width="48" height="48" alt="48dp">48</div>
+          <div><img src="../icons/png/xhdpi/messages.png" width="96" height="96" alt="96dp">96</div>
+          <div><img src="../icons/png/xxhdpi/messages.png" width="144" height="144" alt="144dp">144</div>
+          <div><img src="../icons/png/xxxhdpi/messages.png" width="192" height="192" alt="192dp">192</div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <footer>Crimson Moon · generated from vector sources · style inspired by “Nezuko bajo la luna carmesí”</footer>
+</div>
+</body>
+</html>
