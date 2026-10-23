@@ -155,6 +155,13 @@ export const GLYPHS = {
     P("M7.8 12.6c2.6-.9 5.4-.6 7.6.8"),
     P("M8.7 15.8c1.9-.7 4-.5 5.7.6"),
   ],
+  // Myspoti: its launcher mark, one rounded wave line — traced from the
+  // vector in the app's own repo (it has no store listing to fetch).
+  wave: [
+    P(
+      "M3.5 11.9v1.7a1.6 1.6 0 0 0 3.1 0V9a1.8 1.8 0 0 1 3.6 0v5.4a1.6 1.6 0 0 0 3.2 0v-3.1a1.7 1.7 0 0 1 3.4 0v1.8q0 2 2.1 2h1.5",
+    ),
+  ],
   music: [
     P("M9.8 17.4V6.4l9.2-2.2v11.2"),
     C(7.4, 17.4, 2.4),

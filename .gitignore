@@ -13,6 +13,7 @@ keys/
 *.keystore
 
 node_modules/
+.tools/
 android/.gradle/
 android/build/
 android/app/build/

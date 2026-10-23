@@ -15,6 +15,10 @@
     <color name="ui_text">#FFF6E7EC</color>
 
     <string name="ui_kicker">Icon pack</string>
+    <string name="ui_loading">Reading this phone\'s apps\u2026</string>
+    <string name="ui_tab_apply">Apply</string>
+    <string name="ui_tab_icons">Icons</string>
+    <string name="ui_tab_coverage">Coverage</string>
     <string name="ui_icons_fmt">%1$d icons</string>
     <string name="ui_coverage_fmt">%1$d of %2$d apps matched</string>
     <string name="ui_apply_title">Apply the pack</string>
@@ -41,64 +45,10 @@
     <string name="ui_export_hint">Paste into a file, then run:\nnode tools/sync-components.mjs that-file.txt</string>
     <string name="ui_footer">Crimson Moon · vectors, five densities · MIT</string>
 
-    <style name="UiKicker">
-        <item name="android:textColor">@color/crimson</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.24</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="UiTitle">
-        <item name="android:textColor">@color/ui_text</item>
-        <item name="android:textSize">30sp</item>
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="UiBody">
-        <item name="android:textColor">@color/ui_dim</item>
-        <item name="android:textSize">12.5sp</item>
-        <item name="android:lineSpacingMultiplier">1.15</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="UiSection">
-        <item name="android:textColor">@color/sakura</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.18</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="UiButton">
-        <item name="android:background">@drawable/ui_button</item>
-        <item name="android:textColor">@color/ui_text</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:minHeight">44dp</item>
-        <item name="android:paddingStart">18dp</item>
-        <item name="android:paddingEnd">18dp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="UiButtonGhost" parent="UiButton">
-        <item name="android:background">@drawable/ui_button_ghost</item>
-        <item name="android:textColor">@color/sakura</item>
-    </style>
-
-    <style name="UiCard">
-        <item name="android:background">@drawable/ui_card</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">18dp</item>
-        <item name="android:layout_marginTop">14dp</item>
-    </style>
-
+    <!--
+      The styles that used to live here (UiKicker, UiTitle, UiBody, UiSection,
+      UiButton, UiButtonGhost, UiCard) were consumed only by the deleted
+      res/layout XML. The Compose screen expresses the same shapes, gradients
+      and type scale in Theme.kt and AppScreen.kt, so nothing references them.
+    -->
 </resources>

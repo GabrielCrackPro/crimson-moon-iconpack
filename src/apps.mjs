@@ -110,6 +110,15 @@ export const APPS = [
   app("telegram", "Telegram", "telegram", "org.telegram.messenger/org.telegram.ui.LaunchActivity"),
   app("netflix", "Netflix", "netflix", "com.netflix.mediaclient/com.netflix.mediaclient.ui.launch.UIWebViewActivity"),
   app("spotify", "Spotify", "spotify", "com.spotify.music/com.spotify.music.MainActivity"),
+  app(
+    "myspoti",
+    "Myspoti",
+    "wave",
+    // Stable and beta ship as different packages under one launcher activity
+    // (app.myspoti.MainActivity); both get the same mark.
+    "app.myspoti.stable/app.myspoti.MainActivity",
+    "app.myspoti/app.myspoti.MainActivity",
+  ),
   app("amazon", "Amazon", "amazon", "com.amazon.mShop.android.shopping/com.amazon.mShop.home.HomeActivity"),
   app("slack", "Slack", "slack", "com.Slack/com.Slack.ui.HomeActivity"),
   app("zoom", "Zoom", "zoom", "us.zoom.videomeetings/us.zoom.videomeetings.LauncherActivity"),

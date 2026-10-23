@@ -9,6 +9,7 @@
     "sync": "node tools/sync-components.mjs",
     "coverage": "node tools/coverage.mjs",
     "monogram": "node tools/monogram.mjs",
+    "from-phone": "node tools/from-phone.mjs",
     "serve": "node tools/serve.mjs"
   },
   "keywords": ["android", "icon-pack", "svg", "launcher"],

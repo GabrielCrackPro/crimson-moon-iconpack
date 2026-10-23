@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 // Release signing material is injected by CI (see .github/workflows/release.yml).
@@ -48,8 +50,32 @@ android {
         }
     }
 
+    buildFeatures {
+        compose = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.activity:activity-compose:1.9.3")
+
+    // One BOM pins every compose artifact to a tested set.
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
+    // The handful of glyphs the screen needs (search, share, check…) without
+    // pulling in material-icons-extended; the two icons core lacks live in
+    // CrimsonIcons.kt as hand-written ImageVectors.
+    implementation("androidx.compose.material:material-icons-core")
 }

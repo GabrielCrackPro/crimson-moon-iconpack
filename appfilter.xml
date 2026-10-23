@@ -60,6 +60,8 @@
     <item component="ComponentInfo{org.telegram.messenger/org.telegram.messenger.DefaultIcon}" drawable="telegram"/>
     <item component="ComponentInfo{com.netflix.mediaclient/com.netflix.mediaclient.ui.launch.UIWebViewActivity}" drawable="netflix"/>
     <item component="ComponentInfo{com.spotify.music/com.spotify.music.MainActivity}" drawable="spotify"/>
+    <item component="ComponentInfo{app.myspoti.stable/app.myspoti.MainActivity}" drawable="myspoti"/>
+    <item component="ComponentInfo{app.myspoti/app.myspoti.MainActivity}" drawable="myspoti"/>
     <item component="ComponentInfo{com.amazon.mShop.android.shopping/com.amazon.mShop.home.HomeActivity}" drawable="amazon"/>
     <item component="ComponentInfo{com.Slack/com.Slack.ui.HomeActivity}" drawable="slack"/>
     <item component="ComponentInfo{us.zoom.videomeetings/us.zoom.videomeetings.LauncherActivity}" drawable="zoom"/>

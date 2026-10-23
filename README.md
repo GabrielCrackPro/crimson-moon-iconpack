@@ -5,7 +5,7 @@
 A neon-noir icon pack built from the mood of *“Nezuko bajo la luna carmesí”*: near-black
 plates, a crimson moon bloom, and sakura-crimson monoline glyphs.
 
-151 icons + a `generic` fallback, drawn as vectors and rendered at every launcher density:
+152 icons + a `generic` fallback, drawn as vectors and rendered at every launcher density:
 system essentials, the Google suite, Xiaomi/MIUI system apps, chat and social, browsers,
 media, finance, tools, games and the Spanish apps a real phone turned out to carry.
 
@@ -30,14 +30,17 @@ Open [`preview/index.html`](preview/index.html) for a home-screen mockup and the
 | `tools/check.mjs` | Validates the generated resources |
 | `tools/fetch-refs.mjs` | Downloads each app's official icon into `refs/` for drawing |
 | `tools/review-sheet.mjs` | Review page: official icon vs the current drawing |
+| `tools/from-phone.mjs` | One command: dump components from the phone over adb, sync, monogram, rebuild |
 | `icons/svg/` | 512 px SVG source of every icon |
 | `icons/foreground/` | Adaptive foreground SVGs (108 dp canvas) |
 | `icons/monochrome/` | Themed-icon mask SVGs (white on transparent) |
 | `icons/png/<density>/` | 48 / 72 / 96 / 144 / 192 px PNGs |
 | `store/` | 512 and 1024 px pack icon for the Play listing |
 | `android/` | Gradle project: generated resources plus the app's own screen |
-| `android/app/src/main/java/.../MainActivity.java` | Apply / browse / missing-icons screen |
-| `android/app/src/main/res/values/ui.xml` | UI colours, strings and styles (survives regeneration) |
+| `android/app/src/main/java/.../MainActivity.kt` | Apply / browse / missing-icons screen, one Compose tree |
+| `android/app/src/main/java/.../AppScreen.kt` | The UI itself: tabs, icon grid, coverage card, pack buttons |
+| `android/app/src/main/java/.../Theme.kt` | Compose colour scheme and type scale, read from the pack's own colour resources |
+| `android/app/src/main/res/values/ui.xml` | UI colours and strings (survives regeneration) |
 | `preview/index.html` | Home-screen mockup + full sheet |
 
 ## Rebuild the assets
@@ -52,9 +55,11 @@ npm run check     # validates XML and cross-checks every resource reference
 
 ## Build the APK
 
-The module is resource-only: the manifest points at `android.app.Activity`, so no
-Java/Kotlin is required. Replace it with your own apply-screen activity when you want
-a real UI.
+The module builds a Kotlin + Jetpack Compose screen (Material 3, one activity, no
+XML layouts): Kotlin 2.1 and the Compose compiler are declared in
+`android/build.gradle.kts`, and `npm run check` guards the manifest's launcher-theme
+intent filters plus every resource the screen references. A local build needs only a
+JDK 17 and an Android SDK; CI brings its own.
 
 ### From CI
 
@@ -98,6 +103,11 @@ locally, export `CM_KEYSTORE_PATH`, `CM_KEYSTORE_PASSWORD`, `CM_KEY_ALIAS` and
 will reject it.
 
 ## The app's own screen
+
+The screen is Jetpack Compose on Material 3 — three segmented tabs over three
+panels, edge-to-edge, always in the pack's own dark palette. The colours come from
+the same resources the icons use (`colors.xml` is regenerated from the pack's tokens
+every build), so the UI cannot drift from the artwork.
 
 Installing the APK gives you a screen with three things:
 
@@ -168,7 +178,7 @@ that supports themed icons drops the plate and paints the glyph with the wallpap
 deepest accent instead — which is also the only way the pack can follow a light theme.
 
 ```bash
-npm run build && npm run check   # 153 adaptive icons, each with a themed layer
+npm run build && npm run check   # 154 adaptive icons, each with a themed layer
 ```
 
 Four properties are load-bearing, and `npm run check` fails without any of them:
@@ -199,8 +209,22 @@ the circle), so the glyph sizes there match what a phone shows.
 
 ## Match your own phone exactly
 
-The curated entries in `src/apps.mjs` guess launch activities, and guesses are what
-usually make one or two icons refuse to apply. The pack's own screen already reports the
+Everything the phone can tell the pack — the exact activities your launcher reports, and
+a monogram fallback for every installed app the pack does not cover yet — is one command:
+
+```bash
+npm run from-phone                       # USB, or a device already on Wi-Fi adb
+npm run from-phone -- 192.168.1.24:5555  # connect to a Wi-Fi endpoint first
+npm run from-phone -- --pair ip:37123    # Android 11+ pairing, first time only
+```
+
+It finds adb on PATH or in the Android SDK, and downloads Google's platform-tools into
+`.tools/` (gitignored) when there is none, so a phone is the only requirement. Install a
+new app, re-run it, and the new package leaves with a monogram until you draw it a real
+glyph. Everything it writes is local state — see the note under *Fallback monograms*.
+
+Each step it wraps is also usable alone. The curated entries in `src/apps.mjs` guess
+launch activities, and guesses are what usually make one or two icons refuse to apply. The pack's own screen already reports the
 exact components it is missing — **Show** to read them, **Copy** or **Share** to get the
 list off the phone — so the adb route below is only needed for a full inventory.
 
@@ -238,8 +262,15 @@ npm run build && npm run check
 
 Each uncovered package gets the initials of its name segment (`com.foo.bar` → `B`) drawn
 in the pack's monoline, mapped to the launcher activity from the dump — so the fallback
-actually applies instead of just looking pretty. Nothing is added to the APK unless
-`src/monograms.json` lists it.
+actually applies instead of just looking pretty.Nothing is added to the APK unless `src/monograms.json` lists it.
+
+Device state — the dump, `device-components.json`, monograms and their overrides — is
+gitignored: it names the apps you have installed and it applies to one phone. The
+consequence is that monograms and device-pinned components exist in builds made from
+this checkout, not in the CI APK. To get them on the phone, either build a personal APK
+here (`gradle -p android assembleRelease`), or fold a component into `DEVICE_ALIASES`
+and its drawing into `src/`, so the shipped pack covers it for everyone — which is what
+the Redmi's own aliases are.
 
 One-off monograms, by label:
 
@@ -295,9 +326,10 @@ The review sheet pairs each app's real icon with what the pack ships, and flags 
 apps that share one drawing. Working method: fetch, review the sheet, redraw the glyph
 from the reference in the pack's monoline 24×24 style, re-review, then build.
 
-Eighteen system apps have no store listing at all (`com.android.settings`, the MIUI apps,
-the Play Store itself, and so on); those keep a symbol drawn from the platform's own icon,
-and `refs/index.json` records the reason for every app without a reference.
+Nineteen apps have no store listing at all (`com.android.settings`, the MIUI apps,
+the Play Store itself, Myspoti — a GitHub-only Spotify client — and so on); those keep a
+symbol drawn from the platform's own icon, or in Myspoti's case the launcher vector in
+its own repo, and `refs/index.json` records the reason for every app without a reference.
 
 ## Add or change an app
 

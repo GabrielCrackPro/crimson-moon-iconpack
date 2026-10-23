@@ -252,7 +252,7 @@ for (const f of ["store/icon-512.png", "store/icon-1024.png", "preview/index.htm
 ok("store icons and preview page exist");
 
 // ------------------------------------------------------- in-app UI wiring
-// The screen is plain XML + Java that tools/build.mjs never touches, so these
+// The screen is Kotlin + Compose that tools/build.mjs never touches, so these
 // checks are the only thing standing between a typo and a black screen again.
 const appDir = path.join(ROOT, "android/app/src/main");
 const manifest = await readFile(path.join(appDir, "AndroidManifest.xml"), "utf8");
@@ -288,9 +288,13 @@ for (const file of await readdir(valuesDir)) {
     }
   }
 }
+// Sources whose @resource references must resolve. The Compose screen replaced
+// the XML layouts and shape drawables, so those directories are gone by design
+// (an absent layout/drawable dir is simply scanned as empty).
 const uiSources = [
-  ...(await readdir(path.join(appDir, "res/layout"))).map((f) => path.join(appDir, "res/layout", f)),
-  ...(await readdir(path.join(appDir, "res/drawable")))
+  ...(await readdir(path.join(appDir, "res/layout")).catch(() => []))
+    .map((f) => path.join(appDir, "res/layout", f)),
+  ...(await readdir(path.join(appDir, "res/drawable")).catch(() => []))
     .filter((f) => f.startsWith("ui_"))
     .map((f) => path.join(appDir, "res/drawable", f)),
   ...(await readdir(path.join(appDir, "java/com/crimsonmoon/iconpack"))).map((f) =>
@@ -298,7 +302,7 @@ const uiSources = [
   ),
 ];
 const uiDrawables = new Set(
-  (await readdir(path.join(appDir, "res/drawable"))).map((f) => f.replace(/\.xml$/, "")),
+  (await readdir(path.join(appDir, "res/drawable")).catch(() => [])).map((f) => f.replace(/\.xml$/, "")),
 );
 for (const file of uiSources) {
   const text = await readFile(file, "utf8");
@@ -318,12 +322,12 @@ for (const file of uiSources) {
 ok("every UI resource reference resolves");
 
 for (const f of [
-  "android/app/src/main/java/com/crimsonmoon/iconpack/MainActivity.java",
-  "android/app/src/main/java/com/crimsonmoon/iconpack/IconAdapter.java",
-  "android/app/src/main/java/com/crimsonmoon/iconpack/PackInfo.java",
-  "android/app/src/main/java/com/crimsonmoon/iconpack/Launchers.java",
-  "android/app/src/main/res/layout/activity_main.xml",
-  "android/app/src/main/res/layout/row_icon.xml",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/MainActivity.kt",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/AppScreen.kt",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/Theme.kt",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/CrimsonIcons.kt",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/PackInfo.kt",
+  "android/app/src/main/java/com/crimsonmoon/iconpack/Launchers.kt",
 ]) {
   try {
     await stat(path.join(ROOT, f));
